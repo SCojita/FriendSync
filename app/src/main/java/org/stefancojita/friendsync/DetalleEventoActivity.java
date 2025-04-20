@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +30,9 @@ public class DetalleEventoActivity extends AppCompatActivity {
     private String eventoId;
     private List<String> asistentes = new ArrayList<>();
     private String creatorUid;
+    private RecyclerView recyclerAsistentes;
+    private AsistenteAdapter asistenteAdapter;
+    private List<Asistente> listaAsistentes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,10 @@ public class DetalleEventoActivity extends AppCompatActivity {
         tvLugar = findViewById(R.id.tvLugar);
         tvDescripcion = findViewById(R.id.tvDescripcion);
         btnUnirse = findViewById(R.id.btnUnirse);
+        recyclerAsistentes = findViewById(R.id.recyclerAsistentes);
+        recyclerAsistentes.setLayoutManager(new LinearLayoutManager(this));
+        asistenteAdapter = new AsistenteAdapter(listaAsistentes);
+        recyclerAsistentes.setAdapter(asistenteAdapter);
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -71,6 +80,21 @@ public class DetalleEventoActivity extends AppCompatActivity {
                         } else if (asistentes != null && asistentes.contains(currentUser.getUid())) {
                             btnUnirse.setEnabled(false);
                             btnUnirse.setText("Ya estás unido");
+                        }
+                    }
+                    asistentes = (List<String>) document.get("asistentes");
+
+                    if (asistentes != null && !asistentes.isEmpty()) {
+                        listaAsistentes.clear();
+                        for (String uid : asistentes) {
+                            db.collection("users") // tu colección de usuarios
+                                    .document(uid)
+                                    .get()
+                                    .addOnSuccessListener(userDoc -> {
+                                        String email = userDoc.getString("correo"); // o "email", depende de tu estructura
+                                        listaAsistentes.add(new Asistente(uid, email != null ? email : uid));
+                                        asistenteAdapter.notifyDataSetChanged();
+                                    });
                         }
                     }
                 });

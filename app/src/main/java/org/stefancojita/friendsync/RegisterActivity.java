@@ -1,6 +1,7 @@
 package org.stefancojita.friendsync;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -12,6 +13,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -45,8 +51,22 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
-                        finish(); // Volver al login
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                        if (user != null) {
+                            Map<String, Object> datosUsuario = new HashMap<>();
+                            datosUsuario.put("email", user.getEmail());
+
+                            db.collection("users")
+                                    .document(user.getUid())
+                                    .set(datosUsuario)
+                                    .addOnSuccessListener(unused -> {
+                                        Log.d("Registro", "Usuario añadido a Firestore");
+                                        Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    });
+                        }
                     } else {
                         Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
