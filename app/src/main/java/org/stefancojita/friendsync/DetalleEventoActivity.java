@@ -7,6 +7,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -33,6 +34,8 @@ public class DetalleEventoActivity extends AppCompatActivity {
     private RecyclerView recyclerAsistentes;
     private AsistenteAdapter asistenteAdapter;
     private List<Asistente> listaAsistentes = new ArrayList<>();
+    private Button btnEliminarEvento;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,9 @@ public class DetalleEventoActivity extends AppCompatActivity {
         recyclerAsistentes.setLayoutManager(new LinearLayoutManager(this));
         asistenteAdapter = new AsistenteAdapter(listaAsistentes);
         recyclerAsistentes.setAdapter(asistenteAdapter);
+        btnEliminarEvento = findViewById(R.id.btnEliminarEvento);
+        btnEliminarEvento.setOnClickListener(v -> eliminarEvento());
+
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -76,7 +82,8 @@ public class DetalleEventoActivity extends AppCompatActivity {
                         asistentes = (List<String>) document.get("asistentes");
 
                         if (creatorUid != null && creatorUid.equals(currentUser.getUid())) {
-                            btnUnirse.setVisibility(View.GONE); // no mostrar botón si eres el creador
+                            btnUnirse.setVisibility(View.GONE);
+                            btnEliminarEvento.setVisibility(View.VISIBLE);
                         } else if (asistentes != null && asistentes.contains(currentUser.getUid())) {
                             btnUnirse.setEnabled(false);
                             btnUnirse.setText("Ya estás unido");
@@ -128,5 +135,26 @@ public class DetalleEventoActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    private void eliminarEvento() {
+        new AlertDialog.Builder(this)
+                .setTitle("Eliminar evento")
+                .setMessage("¿Estás seguro de que quieres eliminar este evento?")
+                .setPositiveButton("Sí", (dialog, which) -> {
+                    db.collection("eventos").document(eventoId)
+                            .delete()
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(this, "Evento eliminado", Toast.LENGTH_SHORT).show();
+                                finish();
+                            })
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Error al eliminar el evento", Toast.LENGTH_SHORT).show()
+                            );
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+
 
 }

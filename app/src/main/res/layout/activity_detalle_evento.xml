@@ -43,6 +43,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/btnEliminarEvento"
+            android:text="Eliminar evento"
+            android:backgroundTint="#D32F2F"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
         <TextView
             android:id="@+id/tvAsistentesTitulo"
             android:text="Asistentes:"
