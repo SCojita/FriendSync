@@ -45,6 +45,11 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        Button btnMisEventos = findViewById(R.id.btnMisEventos);
+        btnMisEventos.setOnClickListener(v -> {
+            startActivity(new Intent(this, MisEventosActivity.class));
+        });
+
         btnLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);

@@ -13,6 +13,9 @@
         android:theme="@style/Theme.FriendSync"
         tools:targetApi="31">
         <activity
+            android:name=".MisEventosActivity"
+            android:exported="false" />
+        <activity
             android:name=".DetalleEventoActivity"
             android:exported="false" />
         <activity

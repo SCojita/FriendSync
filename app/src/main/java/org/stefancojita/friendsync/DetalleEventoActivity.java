@@ -101,17 +101,32 @@ public class DetalleEventoActivity extends AppCompatActivity {
     }
 
     private void unirseAlEvento() {
-        if (asistentes == null) asistentes = new ArrayList<>();
-        if (!asistentes.contains(currentUser.getUid())) {
-            asistentes.add(currentUser.getUid());
+        db.collection("eventos").document(eventoId)
+                .get()
+                .addOnSuccessListener(document -> {
+                    if (document.exists()) {
+                        List<String> asistentes = (List<String>) document.get("asistentes");
 
-            db.collection("eventos").document(eventoId)
-                    .update("asistentes", asistentes)
-                    .addOnSuccessListener(unused -> {
-                        Toast.makeText(this, "Te has unido al evento", Toast.LENGTH_SHORT).show();
-                        btnUnirse.setEnabled(false);
-                        btnUnirse.setText("Ya estás unido");
-                    });
-        }
+                        if (asistentes == null) asistentes = new ArrayList<>();
+
+                        if (!asistentes.contains(currentUser.getUid())) {
+                            asistentes.add(currentUser.getUid());
+
+                            db.collection("eventos").document(eventoId)
+                                    .update("asistentes", asistentes)
+                                    .addOnSuccessListener(unused -> {
+                                        Toast.makeText(this, "Te has unido al evento", Toast.LENGTH_SHORT).show();
+                                        btnUnirse.setEnabled(false);
+                                        btnUnirse.setText("Ya estás unido");
+
+
+                                        cargarDetallesEvento(); // recargar asistentes
+                                    });
+                        } else {
+                            Toast.makeText(this, "Ya estás unido a este evento", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
+
 }
