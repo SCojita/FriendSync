@@ -14,14 +14,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ListaEventosActivity extends AppCompatActivity {
 
     private RecyclerView recyclerEventos;
     private EventoAdapter adapter;
     private List<Evento> listaEventos;
+    List<String> listaIds = new ArrayList<>();
     private FirebaseFirestore db;
 
     @Override
@@ -33,7 +38,6 @@ public class ListaEventosActivity extends AppCompatActivity {
         recyclerEventos.setLayoutManager(new LinearLayoutManager(this));
 
         listaEventos = new ArrayList<>();
-        List<String> listaIds = new ArrayList<>();
         adapter = new EventoAdapter(listaEventos, listaIds);
         recyclerEventos.setAdapter(adapter);
 
@@ -47,15 +51,28 @@ public class ListaEventosActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     listaEventos.clear();
-                    List<String> listaIds = new ArrayList<>();
+                    listaIds.clear();
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    Date fechaActual = new Date();
 
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         Evento evento = doc.toObject(Evento.class);
-                        listaEventos.add(evento);
-                        listaIds.add(doc.getId()); // ← guardamos el ID
+                        String fechaStr = evento.getFecha();
+
+                        try {
+                            Date fechaEvento = sdf.parse(fechaStr);
+
+                            if (fechaEvento != null && !fechaEvento.before(fechaActual)) {
+                                listaEventos.add(evento);
+                                listaIds.add(doc.getId());
+                            }
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
 
-                    // Creamos adaptador pasando lista de eventos y lista de IDs
                     adapter = new EventoAdapter(listaEventos, listaIds);
                     recyclerEventos.setAdapter(adapter);
                 })
@@ -63,5 +80,6 @@ public class ListaEventosActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al cargar eventos", Toast.LENGTH_SHORT).show()
                 );
     }
+
 
 }
