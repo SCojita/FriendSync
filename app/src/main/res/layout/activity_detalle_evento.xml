@@ -53,6 +53,14 @@
             android:layout_height="wrap_content"
             android:visibility="gone"/>
 
+        <Button
+            android:id="@+id/btnEditarEvento"
+            android:text="Editar evento"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
         <TextView
             android:id="@+id/tvAsistentesTitulo"
             android:text="Asistentes:"

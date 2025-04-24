@@ -1,5 +1,6 @@
 package org.stefancojita.friendsync;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -35,7 +36,7 @@ public class DetalleEventoActivity extends AppCompatActivity {
     private AsistenteAdapter asistenteAdapter;
     private List<Asistente> listaAsistentes = new ArrayList<>();
     private Button btnEliminarEvento;
-
+    private Button btnEditarEvento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,12 @@ public class DetalleEventoActivity extends AppCompatActivity {
         recyclerAsistentes.setAdapter(asistenteAdapter);
         btnEliminarEvento = findViewById(R.id.btnEliminarEvento);
         btnEliminarEvento.setOnClickListener(v -> eliminarEvento());
-
+        btnEditarEvento = findViewById(R.id.btnEditarEvento);
+        btnEditarEvento.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EditarEventoActivity.class);
+            intent.putExtra("eventoId", eventoId);
+            startActivity(intent);
+        });
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -84,6 +90,7 @@ public class DetalleEventoActivity extends AppCompatActivity {
                         if (creatorUid != null && creatorUid.equals(currentUser.getUid())) {
                             btnUnirse.setVisibility(View.GONE);
                             btnEliminarEvento.setVisibility(View.VISIBLE);
+                            btnEditarEvento.setVisibility(View.VISIBLE);
                         } else if (asistentes != null && asistentes.contains(currentUser.getUid())) {
                             btnUnirse.setEnabled(false);
                             btnUnirse.setText("Ya estás unido");
@@ -125,7 +132,6 @@ public class DetalleEventoActivity extends AppCompatActivity {
                                         Toast.makeText(this, "Te has unido al evento", Toast.LENGTH_SHORT).show();
                                         btnUnirse.setEnabled(false);
                                         btnUnirse.setText("Ya estás unido");
-
 
                                         cargarDetallesEvento(); // recargar asistentes
                                     });
