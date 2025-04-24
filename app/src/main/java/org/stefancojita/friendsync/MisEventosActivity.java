@@ -1,6 +1,7 @@
 package org.stefancojita.friendsync;
 
 import android.os.Bundle;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,7 @@ public class MisEventosActivity extends AppCompatActivity {
     private List<String> listaIds = new ArrayList<>();
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,19 @@ public class MisEventosActivity extends AppCompatActivity {
 
         recyclerMisEventos = findViewById(R.id.recyclerEventos);
         recyclerMisEventos.setLayoutManager(new LinearLayoutManager(this));
+        searchView = findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false; // No hacemos nada al pulsar "Enter"
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filtrarEventos(newText);
+                return true;
+            }
+        });
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -68,5 +83,26 @@ public class MisEventosActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al cargar tus eventos", Toast.LENGTH_SHORT).show()
                 );
     }
+
+    private void filtrarEventos(String texto) {
+        List<Evento> listaFiltrada = new ArrayList<>();
+        List<String> listaIdsFiltrada = new ArrayList<>();
+
+        for (int i = 0; i < listaMisEventos.size(); i++) {
+            Evento evento = listaMisEventos.get(i);
+            String id = listaIds.get(i);
+
+            if (evento.getTitulo().toLowerCase().contains(texto.toLowerCase()) ||
+                    evento.getLugar().toLowerCase().contains(texto.toLowerCase())) {
+                listaFiltrada.add(evento);
+                listaIdsFiltrada.add(id);
+            }
+        }
+
+        // Actualizamos el adaptador con la lista filtrada
+        adapter = new EventoAdapter(listaFiltrada, listaIdsFiltrada);
+        recyclerMisEventos.setAdapter(adapter);
+    }
+
 }
 

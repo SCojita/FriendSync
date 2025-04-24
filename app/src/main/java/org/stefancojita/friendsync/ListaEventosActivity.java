@@ -1,6 +1,7 @@
 package org.stefancojita.friendsync;
 
 import android.os.Bundle;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -28,6 +29,7 @@ public class ListaEventosActivity extends AppCompatActivity {
     private List<Evento> listaEventos;
     List<String> listaIds = new ArrayList<>();
     private FirebaseFirestore db;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,19 @@ public class ListaEventosActivity extends AppCompatActivity {
         listaEventos = new ArrayList<>();
         adapter = new EventoAdapter(listaEventos, listaIds);
         recyclerEventos.setAdapter(adapter);
+        searchView = findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false; // No hacemos nada al pulsar "Enter"
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filtrarEventos(newText);
+                return true;
+            }
+        });
 
         db = FirebaseFirestore.getInstance();
 
@@ -79,6 +94,26 @@ public class ListaEventosActivity extends AppCompatActivity {
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error al cargar eventos", Toast.LENGTH_SHORT).show()
                 );
+    }
+
+    private void filtrarEventos(String texto) {
+        List<Evento> listaFiltrada = new ArrayList<>();
+        List<String> listaIdsFiltrada = new ArrayList<>();
+
+        for (int i = 0; i < listaEventos.size(); i++) {
+            Evento evento = listaEventos.get(i);
+            String id = listaIds.get(i);
+
+            if (evento.getTitulo().toLowerCase().contains(texto.toLowerCase()) ||
+                    evento.getLugar().toLowerCase().contains(texto.toLowerCase())) {
+                listaFiltrada.add(evento);
+                listaIdsFiltrada.add(id);
+            }
+        }
+
+        // Actualizamos el adaptador con la lista filtrada
+        adapter = new EventoAdapter(listaFiltrada, listaIdsFiltrada);
+        recyclerEventos.setAdapter(adapter);
     }
 
 
