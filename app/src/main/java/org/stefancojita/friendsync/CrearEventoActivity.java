@@ -1,5 +1,6 @@
 package org.stefancojita.friendsync;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,7 @@ public class CrearEventoActivity extends AppCompatActivity {
 
         etTitulo = findViewById(R.id.etTitulo);
         etFecha = findViewById(R.id.etFecha);
+        etFecha.setOnClickListener(v -> mostrarDatePicker());
         etLugar = findViewById(R.id.etLugar);
         etDescripcion = findViewById(R.id.etDescripcion);
         btnGuardarEvento = findViewById(R.id.btnGuardarEvento);
@@ -41,6 +44,23 @@ public class CrearEventoActivity extends AppCompatActivity {
 
         btnGuardarEvento.setOnClickListener(v -> guardarEvento());
     }
+
+    private void mostrarDatePicker() {
+        final Calendar calendario = Calendar.getInstance();
+        int anio = calendario.get(Calendar.YEAR);
+        int mes = calendario.get(Calendar.MONTH);
+        int dia = calendario.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    String fechaSeleccionada = String.format("%02d/%02d/%04d", dayOfMonth, monthOfYear + 1, year);
+                    etFecha.setText(fechaSeleccionada);
+                }, anio, mes, dia);
+
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        datePickerDialog.show();
+    }
+
 
     private void guardarEvento() {
         String titulo = etTitulo.getText().toString().trim();
