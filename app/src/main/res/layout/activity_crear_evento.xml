@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="24dp">
 
     <LinearLayout
@@ -9,39 +10,63 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/etTitulo"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Título del evento" />
+            android:hint="Título del evento"
+            android:layout_marginBottom="12dp">
 
-        <EditText
-            android:id="@+id/etFecha"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Fecha (por ejemplo: 20/04/2025)"
-            android:layout_marginTop="12dp"/>
+            android:hint="Fecha del evento"
+            android:layout_marginBottom="12dp"
+            >
 
-        <EditText
-            android:id="@+id/etLugar"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Lugar"
-            android:layout_marginTop="12dp"/>
+            android:hint="Lugar del evento"
+            android:layout_marginBottom="12dp">
 
-        <EditText
-            android:id="@+id/etDescripcion"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLugar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Descripción"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginBottom="12dp">
 
-        <Button
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGuardarEvento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Guardar evento"
-            android:layout_marginTop="24dp"/>
+            android:layout_marginTop="24dp"
+            app:cornerRadius="16dp"
+            app:iconPadding="12dp"/>
 
     </LinearLayout>
 </ScrollView>
