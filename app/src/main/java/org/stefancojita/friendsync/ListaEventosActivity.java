@@ -18,6 +18,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -69,7 +71,7 @@ public class ListaEventosActivity extends AppCompatActivity {
                     listaIds.clear();
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                    Date fechaActual = new Date();
+                    Date fechaActual = soloFechaActual();
 
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         Evento evento = doc.toObject(Evento.class);
@@ -78,7 +80,7 @@ public class ListaEventosActivity extends AppCompatActivity {
                         try {
                             Date fechaEvento = sdf.parse(fechaStr);
 
-                            if (fechaEvento != null && !fechaEvento.before(fechaActual)) {
+                            if (fechaEvento != null && !fechaEvento.before(fechaActual)) { // Solo eventos futuros
                                 listaEventos.add(evento);
                                 listaIds.add(doc.getId());
                             }
@@ -88,6 +90,17 @@ public class ListaEventosActivity extends AppCompatActivity {
                         }
                     }
 
+                    Collections.sort(listaEventos, (e1, e2) -> {
+                        try {
+                            Date fecha1 = sdf.parse(e1.getFecha());
+                            Date fecha2 = sdf.parse(e2.getFecha());
+                            return fecha1.compareTo(fecha2);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            return 0;
+                        }
+                    });
+
                     adapter = new EventoAdapter(listaEventos, listaIds);
                     recyclerEventos.setAdapter(adapter);
                 })
@@ -95,6 +108,7 @@ public class ListaEventosActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error al cargar eventos", Toast.LENGTH_SHORT).show()
                 );
     }
+
 
     private void filtrarEventos(String texto) {
         List<Evento> listaFiltrada = new ArrayList<>();
@@ -115,6 +129,16 @@ public class ListaEventosActivity extends AppCompatActivity {
         adapter = new EventoAdapter(listaFiltrada, listaIdsFiltrada);
         recyclerEventos.setAdapter(adapter);
     }
+
+    private Date soloFechaActual() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
 
 
 }
