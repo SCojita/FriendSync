@@ -13,6 +13,14 @@
         android:layout_height="wrap_content" />
 
     <EditText
+        android:id="@+id/registerAliasEditText"
+        android:hint="Nombre de usuario"
+        android:inputType="textPersonName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <EditText
         android:id="@+id/registerPasswordEditText"
         android:hint="Contraseña"
         android:inputType="textPassword"

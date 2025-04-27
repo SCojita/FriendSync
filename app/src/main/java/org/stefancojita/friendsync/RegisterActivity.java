@@ -24,6 +24,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText emailEditText, passwordEditText;
     private Button registerButton;
     private FirebaseAuth mAuth;
+    private EditText aliasEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         emailEditText = findViewById(R.id.registerEmailEditText);
+        aliasEditText = findViewById(R.id.registerAliasEditText);
         passwordEditText = findViewById(R.id.registerPasswordEditText);
         registerButton = findViewById(R.id.registerButton);
 
@@ -41,10 +43,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser() {
         String email = emailEditText.getText().toString().trim();
+        String alias = aliasEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        if (email.isEmpty() || password.length() < 6) {
-            Toast.makeText(this, "Correo válido y contraseña de al menos 6 caracteres", Toast.LENGTH_SHORT).show();
+        if (email.isEmpty() || password.length() < 6 || alias.isEmpty()) {
+            Toast.makeText(this, "Rellena todos los campos (contraseña mínimo 6 caracteres)", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -57,6 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
                         if (user != null) {
                             Map<String, Object> datosUsuario = new HashMap<>();
                             datosUsuario.put("email", user.getEmail());
+                            datosUsuario.put("alias", alias);
 
                             db.collection("users")
                                     .document(user.getUid())

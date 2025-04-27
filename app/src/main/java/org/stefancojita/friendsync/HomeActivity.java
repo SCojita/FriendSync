@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -29,12 +30,21 @@ public class HomeActivity extends AppCompatActivity {
         btnVerEventos = findViewById(R.id.btnVerEventos);
         btnLogout = findViewById(R.id.btnLogout);
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            String email = user.getEmail();
-            tvWelcome.setText("¡Bienvenido, " + email + "!");
-        }
 
+        if (user != null) {
+            db.collection("users").document(user.getUid())
+                    .get()
+                    .addOnSuccessListener(document -> {
+                        if (document.exists()) {
+                            String alias = document.getString("alias");
+                            String correo = user.getEmail();
+                            tvWelcome.setText("¡Bienvenido, " + alias + " (" + correo + ")!");
+                        }
+                    });
+        }
+        
         btnCrearEvento.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, CrearEventoActivity.class);
             startActivity(intent);
