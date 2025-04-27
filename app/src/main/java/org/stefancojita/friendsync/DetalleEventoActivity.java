@@ -1,6 +1,11 @@
 package org.stefancojita.friendsync;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +15,9 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -72,6 +80,8 @@ public class DetalleEventoActivity extends AppCompatActivity {
         }
 
         btnUnirse.setOnClickListener(v -> unirseAlEvento());
+
+        crearCanalNotificaciones();
     }
 
     private void cargarDetallesEvento() {
@@ -133,7 +143,9 @@ public class DetalleEventoActivity extends AppCompatActivity {
                                         btnUnirse.setEnabled(false);
                                         btnUnirse.setText("Ya estás unido");
 
-                                        cargarDetallesEvento(); // recargar asistentes
+                                        enviarNotificacionUnido(tvTitulo.getText().toString());
+
+                                        cargarDetallesEvento();
                                     });
                         } else {
                             Toast.makeText(this, "Ya estás unido a este evento", Toast.LENGTH_SHORT).show();
@@ -161,6 +173,31 @@ public class DetalleEventoActivity extends AppCompatActivity {
                 .show();
     }
 
+    private void crearCanalNotificaciones() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence nombre = "CanalEventos";
+            String descripcion = "Canal para notificaciones de eventos";
+            int importancia = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel canal = new NotificationChannel("canal_eventos", nombre, importancia);
+            canal.setDescription(descripcion);
 
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(canal);
+        }
+    }
+
+    private void enviarNotificacionUnido(String tituloEvento) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "canal_eventos")
+                .setSmallIcon(R.drawable.ic_event) // Icono de la notificación
+                .setContentTitle("¡Te has unido a un evento!")
+                .setContentText("Evento: " + tituloEvento)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            notificationManager.notify(1, builder.build());
+        }
+    }
 
 }
