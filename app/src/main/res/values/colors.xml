@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#4CAF50</color> <!-- Verde principal -->
+    <color name="colorPrimaryVariant">#388E3C</color> <!-- Verde oscuro -->
+    <color name="colorSecondary">#8BC34A</color> <!-- Verde lima -->
+    <color name="colorSecondaryVariant">#689F38</color> <!-- Otro tono de verde -->
+    <color name="colorBackground">#FFFFFF</color> <!-- Blanco -->
+    <color name="colorSurface">#F5F5F5</color> <!-- Gris claro -->
+    <color name="colorOnPrimary">#FFFFFF</color> <!-- Texto blanco sobre verde -->
+    <color name="colorOnSecondary">#000000</color> <!-- Texto negro sobre lima -->
+    <color name="colorOnBackground">#000000</color> <!-- Texto negro sobre fondo -->
+
 </resources>
