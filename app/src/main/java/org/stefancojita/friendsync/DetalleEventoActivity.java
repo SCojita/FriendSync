@@ -85,6 +85,8 @@ public class DetalleEventoActivity extends AppCompatActivity {
     }
 
     private void cargarDetallesEvento() {
+        btnEliminarEvento.setVisibility(View.GONE);
+        btnEditarEvento.setVisibility(View.GONE);
         db.collection("eventos").document(eventoId)
                 .get()
                 .addOnSuccessListener(document -> {
@@ -99,12 +101,17 @@ public class DetalleEventoActivity extends AppCompatActivity {
 
                         if (creatorUid != null && creatorUid.equals(currentUser.getUid())) {
                             btnUnirse.setVisibility(View.GONE);
+
                             btnEliminarEvento.setVisibility(View.VISIBLE);
                             btnEditarEvento.setVisibility(View.VISIBLE);
                         } else if (asistentes != null && asistentes.contains(currentUser.getUid())) {
-                            btnUnirse.setEnabled(false);
-                            btnUnirse.setText("Ya estás unido");
+                            btnUnirse.setText("Salir del evento");
+                            btnUnirse.setOnClickListener(v -> salirDelEvento());
+                        } else {
+                            btnUnirse.setText("Unirse al evento");
+                            btnUnirse.setOnClickListener(v -> unirseAlEvento());
                         }
+
                     }
                     asistentes = (List<String>) document.get("asistentes");
 
@@ -172,6 +179,28 @@ public class DetalleEventoActivity extends AppCompatActivity {
                 .setNegativeButton("Cancelar", null)
                 .show();
     }
+
+    private void salirDelEvento() {
+        db.collection("eventos").document(eventoId)
+                .get()
+                .addOnSuccessListener(document -> {
+                    if (document.exists()) {
+                        List<String> asistentes = (List<String>) document.get("asistentes");
+
+                        if (asistentes != null && asistentes.contains(currentUser.getUid())) {
+                            asistentes.remove(currentUser.getUid());
+
+                            db.collection("eventos").document(eventoId)
+                                    .update("asistentes", asistentes)
+                                    .addOnSuccessListener(unused -> {
+                                        Toast.makeText(this, "Has salido del evento", Toast.LENGTH_SHORT).show();
+                                        cargarDetallesEvento();
+                                    });
+                        }
+                    }
+                });
+    }
+
 
     private void crearCanalNotificaciones() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
