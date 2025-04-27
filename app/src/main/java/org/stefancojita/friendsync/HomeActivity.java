@@ -44,7 +44,7 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     });
         }
-        
+
         btnCrearEvento.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, CrearEventoActivity.class);
             startActivity(intent);
