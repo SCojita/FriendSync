@@ -12,6 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,6 +27,7 @@ public class CrearEventoActivity extends AppCompatActivity {
     private Button btnGuardarEvento;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
+    private MaterialCheckBox checkboxPublico;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class CrearEventoActivity extends AppCompatActivity {
         etLugar = findViewById(R.id.etLugar);
         etDescripcion = findViewById(R.id.etDescripcion);
         btnGuardarEvento = findViewById(R.id.btnGuardarEvento);
+        checkboxPublico = findViewById(R.id.checkboxPublico);
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -67,6 +70,7 @@ public class CrearEventoActivity extends AppCompatActivity {
         String fecha = etFecha.getText().toString().trim();
         String lugar = etLugar.getText().toString().trim();
         String descripcion = etDescripcion.getText().toString().trim();
+        boolean esPublico = checkboxPublico.isChecked();
 
         if (titulo.isEmpty() || fecha.isEmpty() || lugar.isEmpty()) {
             Toast.makeText(this, "Completa todos los campos obligatorios", Toast.LENGTH_SHORT).show();
@@ -78,6 +82,7 @@ public class CrearEventoActivity extends AppCompatActivity {
         evento.put("fecha", fecha);
         evento.put("lugar", lugar);
         evento.put("descripcion", descripcion);
+        evento.put("publico", esPublico);
         evento.put("uid_usuario", currentUser.getUid()); // para asociar evento al usuario
 
         db.collection("eventos")

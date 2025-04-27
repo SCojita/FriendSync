@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
@@ -20,6 +21,7 @@ public class EditarEventoActivity extends AppCompatActivity {
     private Button btnGuardarCambios;
     private FirebaseFirestore db;
     private String eventoId;
+    private MaterialCheckBox checkboxPublico;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class EditarEventoActivity extends AppCompatActivity {
         etFecha.setOnClickListener(v -> mostrarDatePicker());
         etLugar = findViewById(R.id.etLugar);
         etDescripcion = findViewById(R.id.etDescripcion);
+        checkboxPublico = findViewById(R.id.checkboxPublico);
         btnGuardarCambios = findViewById(R.id.btnGuardarEvento);
 
         db = FirebaseFirestore.getInstance();
@@ -51,9 +54,13 @@ public class EditarEventoActivity extends AppCompatActivity {
                         etFecha.setText(document.getString("fecha"));
                         etLugar.setText(document.getString("lugar"));
                         etDescripcion.setText(document.getString("descripcion"));
+
+                        Boolean esPublico = document.getBoolean("publico");
+                        checkboxPublico.setChecked(Boolean.TRUE.equals(esPublico));
                     }
                 });
     }
+
 
     private void mostrarDatePicker() {
         final Calendar calendario = Calendar.getInstance();
@@ -76,6 +83,9 @@ public class EditarEventoActivity extends AppCompatActivity {
         String fecha = etFecha.getText().toString().trim();
         String lugar = etLugar.getText().toString().trim();
         String descripcion = etDescripcion.getText().toString().trim();
+        boolean esPublico = checkboxPublico.isChecked();
+
+
 
         if (titulo.isEmpty() || fecha.isEmpty() || lugar.isEmpty()) {
             Toast.makeText(this, "Completa los campos obligatorios", Toast.LENGTH_SHORT).show();
@@ -87,6 +97,7 @@ public class EditarEventoActivity extends AppCompatActivity {
         actualizacion.put("fecha", fecha);
         actualizacion.put("lugar", lugar);
         actualizacion.put("descripcion", descripcion);
+        actualizacion.put("publico", esPublico);
 
         db.collection("eventos").document(eventoId)
                 .update(actualizacion)

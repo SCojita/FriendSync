@@ -77,10 +77,15 @@ public class ListaEventosActivity extends AppCompatActivity {
                         Evento evento = doc.toObject(Evento.class);
                         String fechaStr = evento.getFecha();
 
+                        Boolean esPublico = doc.getBoolean("publico");
+                        if (!Boolean.TRUE.equals(esPublico)) {
+                            continue;
+                        }
+
                         try {
                             Date fechaEvento = sdf.parse(fechaStr);
 
-                            if (fechaEvento != null && !fechaEvento.before(fechaActual)) { // Solo eventos futuros
+                            if (fechaEvento != null && !fechaEvento.before(fechaActual)) {
                                 listaEventos.add(evento);
                                 listaIds.add(doc.getId());
                             }
