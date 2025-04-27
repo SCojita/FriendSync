@@ -118,12 +118,13 @@ public class DetalleEventoActivity extends AppCompatActivity {
                     if (asistentes != null && !asistentes.isEmpty()) {
                         listaAsistentes.clear();
                         for (String uid : asistentes) {
-                            db.collection("users") // tu colección de usuarios
+                            db.collection("users")
                                     .document(uid)
                                     .get()
                                     .addOnSuccessListener(userDoc -> {
-                                        String email = userDoc.getString("correo"); // o "email", depende de tu estructura
-                                        listaAsistentes.add(new Asistente(uid, email != null ? email : uid));
+                                        String alias = userDoc.getString("alias");
+                                        String email = userDoc.getString("email");
+                                        listaAsistentes.add(new Asistente(uid, alias, email));
                                         asistenteAdapter.notifyDataSetChanged();
                                     });
                         }

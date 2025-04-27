@@ -29,7 +29,7 @@ public class AsistenteAdapter extends RecyclerView.Adapter<AsistenteAdapter.Asis
     @Override
     public void onBindViewHolder(@NonNull AsistenteViewHolder holder, int position) {
         Asistente asistente = listaAsistentes.get(position);
-        holder.textView.setText(asistente.getEmail());
+        holder.textView.setText(asistente.getAlias() + " (" + asistente.getEmail() + ")");
     }
 
     @Override
