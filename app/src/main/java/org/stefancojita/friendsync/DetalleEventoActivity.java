@@ -45,12 +45,14 @@ public class DetalleEventoActivity extends AppCompatActivity {
     private List<Asistente> listaAsistentes = new ArrayList<>();
     private Button btnEliminarEvento;
     private Button btnEditarEvento;
+    private TextView tvCreadorEvento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_evento);
 
+        tvCreadorEvento = findViewById(R.id.tvCreadorEvento);
         tvTitulo = findViewById(R.id.tvTitulo);
         tvFecha = findViewById(R.id.tvFecha);
         tvLugar = findViewById(R.id.tvLugar);
@@ -97,11 +99,20 @@ public class DetalleEventoActivity extends AppCompatActivity {
                         tvDescripcion.setText("Descripción: " + document.getString("descripcion"));
 
                         creatorUid = document.getString("uid_usuario");
+
+                        db.collection("users").document(creatorUid)
+                                .get()
+                                .addOnSuccessListener(userDoc -> {
+                                    if (userDoc.exists()) {
+                                        String alias = userDoc.getString("alias");
+                                        tvCreadorEvento.setText("Autor: " + alias);
+                                    }
+                                });
+
                         asistentes = (List<String>) document.get("asistentes");
 
                         if (creatorUid != null && creatorUid.equals(currentUser.getUid())) {
                             btnUnirse.setVisibility(View.GONE);
-
                             btnEliminarEvento.setVisibility(View.VISIBLE);
                             btnEditarEvento.setVisibility(View.VISIBLE);
                         } else if (asistentes != null && asistentes.contains(currentUser.getUid())) {
