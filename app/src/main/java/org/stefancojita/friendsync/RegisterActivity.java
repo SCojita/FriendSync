@@ -2,6 +2,7 @@ package org.stefancojita.friendsync;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -43,13 +44,33 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser() {
         String email = emailEditText.getText().toString().trim();
-        String alias = aliasEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
+        String alias = aliasEditText.getText().toString().trim();
 
-        if (email.isEmpty() || password.length() < 6 || alias.isEmpty()) {
-            Toast.makeText(this, "Rellena todos los campos (contraseña mínimo 6 caracteres)", Toast.LENGTH_SHORT).show();
+        if (email.isEmpty()) {
+            emailEditText.setError("El correo es obligatorio");
+            emailEditText.requestFocus();
             return;
         }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailEditText.setError("Introduce un correo válido");
+            emailEditText.requestFocus();
+            return;
+        }
+
+        if (password.length() < 6) {
+            passwordEditText.setError("Contraseña mínimo 6 caracteres");
+            passwordEditText.requestFocus();
+            return;
+        }
+
+        if (alias.isEmpty()) {
+            aliasEditText.setError("El nombre de usuario es obligatorio");
+            aliasEditText.requestFocus();
+            return;
+        }
+
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {

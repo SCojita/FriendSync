@@ -72,8 +72,21 @@ public class CrearEventoActivity extends AppCompatActivity {
         String descripcion = etDescripcion.getText().toString().trim();
         boolean esPublico = checkboxPublico.isChecked();
 
-        if (titulo.isEmpty() || fecha.isEmpty() || lugar.isEmpty()) {
-            Toast.makeText(this, "Completa todos los campos obligatorios", Toast.LENGTH_SHORT).show();
+        if (titulo.isEmpty()) {
+            etTitulo.setError("El título es obligatorio");
+            etTitulo.requestFocus();
+            return;
+        }
+
+        if (fecha.isEmpty()) {
+            etFecha.setError("La fecha es obligatoria");
+            etFecha.requestFocus();
+            return;
+        }
+
+        if (lugar.isEmpty()) {
+            etLugar.setError("El lugar es obligatorio");
+            etLugar.requestFocus();
             return;
         }
 
@@ -83,7 +96,7 @@ public class CrearEventoActivity extends AppCompatActivity {
         evento.put("lugar", lugar);
         evento.put("descripcion", descripcion);
         evento.put("publico", esPublico);
-        evento.put("uid_usuario", currentUser.getUid()); // para asociar evento al usuario
+        evento.put("uid_usuario", currentUser.getUid());
 
         db.collection("eventos")
                 .add(evento)
