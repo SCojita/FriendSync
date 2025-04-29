@@ -71,7 +71,6 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
