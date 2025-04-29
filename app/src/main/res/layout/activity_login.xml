@@ -1,43 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/colorSurface"
     android:padding="24dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/emailEditText"
-        android:hint="Correo electrónico"
-        android:inputType="textEmailAddress"
-        android:layout_width="match_parent"
+    <TextView
+        android:text="¡Bienvenido a FriendSync!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="32dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <EditText
-        android:id="@+id/passwordEditText"
-        android:hint="Contraseña"
-        android:inputType="textPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
-    <Button
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Correo electrónico">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:hint="Contraseña">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/loginButton"
-        android:text="Iniciar sesión"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Entrar"
+        app:backgroundTint="@color/colorPrimary"
+        app:cornerRadius="16dp"
+        android:textColor="@android:color/white"/>
 
     <TextView
         android:id="@+id/tvOlvidasteContrasena"
         android:text="¿Has olvidado tu contraseña?"
         android:textColor="@color/colorPrimary"
         android:textSize="14sp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <Button
+    <TextView
         android:id="@+id/goToRegisterButton"
         android:text="¿No tienes cuenta? Regístrate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

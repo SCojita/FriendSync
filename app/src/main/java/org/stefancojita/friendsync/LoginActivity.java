@@ -20,7 +20,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText emailEditText, passwordEditText;
-    private Button loginButton, goToRegisterButton;
+    private Button loginButton;
+    private TextView goToRegisterButton;
     private FirebaseAuth mAuth;
     private TextView tvOlvidasteContrasena;
 
@@ -36,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         tvOlvidasteContrasena = findViewById(R.id.tvOlvidasteContrasena);
         tvOlvidasteContrasena.setOnClickListener(v -> mostrarDialogoRecuperarContrasena());
-        goToRegisterButton = findViewById(R.id.goToRegisterButton);
+        goToRegisterButton = (TextView) findViewById(R.id.goToRegisterButton);
 
         loginButton.setOnClickListener(v -> loginUser());
         goToRegisterButton.setOnClickListener(v -> {
