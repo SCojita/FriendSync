@@ -89,42 +89,46 @@ public class DetalleEventoActivity extends AppCompatActivity {
     private void cargarDetallesEvento() {
         btnEliminarEvento.setVisibility(View.GONE);
         btnEditarEvento.setVisibility(View.GONE);
+
         db.collection("eventos").document(eventoId)
-                .get()
-                .addOnSuccessListener(document -> {
-                    if (document.exists()) {
-                        tvTitulo.setText(document.getString("titulo"));
-                        tvFecha.setText("Fecha: " + document.getString("fecha"));
-                        tvLugar.setText("Lugar: " + document.getString("lugar"));
-                        tvDescripcion.setText("Descripción: " + document.getString("descripcion"));
+                .addSnapshotListener((documentSnapshot, error) -> {
+                    if (error != null || documentSnapshot == null || !documentSnapshot.exists()) return;
 
-                        creatorUid = document.getString("uid_usuario");
+                    tvTitulo.setText(documentSnapshot.getString("titulo"));
+                    tvFecha.setText("Fecha: " + documentSnapshot.getString("fecha"));
+                    tvLugar.setText("Lugar: " + documentSnapshot.getString("lugar"));
+                    tvDescripcion.setText("Descripción: " + documentSnapshot.getString("descripcion"));
 
+                    creatorUid = documentSnapshot.getString("uid_usuario");
+
+                    if (creatorUid != null) {
                         db.collection("users").document(creatorUid)
                                 .get()
                                 .addOnSuccessListener(userDoc -> {
                                     if (userDoc.exists()) {
                                         String alias = userDoc.getString("alias");
-                                        tvCreadorEvento.setText("Autor: " + alias);
+                                        if (alias != null) {
+                                            tvCreadorEvento.setText("Autor: " + alias);
+                                        }
                                     }
                                 });
-
-                        asistentes = (List<String>) document.get("asistentes");
-
-                        if (creatorUid != null && creatorUid.equals(currentUser.getUid())) {
-                            btnUnirse.setVisibility(View.GONE);
-                            btnEliminarEvento.setVisibility(View.VISIBLE);
-                            btnEditarEvento.setVisibility(View.VISIBLE);
-                        } else if (asistentes != null && asistentes.contains(currentUser.getUid())) {
-                            btnUnirse.setText("Salir del evento");
-                            btnUnirse.setOnClickListener(v -> salirDelEvento());
-                        } else {
-                            btnUnirse.setText("Unirse al evento");
-                            btnUnirse.setOnClickListener(v -> unirseAlEvento());
-                        }
-
                     }
-                    asistentes = (List<String>) document.get("asistentes");
+
+                    asistentes = (List<String>) documentSnapshot.get("asistentes");
+
+                    if (creatorUid != null && creatorUid.equals(currentUser.getUid())) {
+                        btnUnirse.setVisibility(View.GONE);
+                        btnEliminarEvento.setVisibility(View.VISIBLE);
+                        btnEditarEvento.setVisibility(View.VISIBLE);
+                    } else if (asistentes != null && asistentes.contains(currentUser.getUid())) {
+                        btnUnirse.setVisibility(View.VISIBLE);
+                        btnUnirse.setText("Salir del evento");
+                        btnUnirse.setOnClickListener(v -> salirDelEvento());
+                    } else {
+                        btnUnirse.setVisibility(View.VISIBLE);
+                        btnUnirse.setText("Unirse al evento");
+                        btnUnirse.setOnClickListener(v -> unirseAlEvento());
+                    }
 
                     if (asistentes != null && !asistentes.isEmpty()) {
                         listaAsistentes.clear();
@@ -142,6 +146,7 @@ public class DetalleEventoActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void unirseAlEvento() {
         db.collection("eventos").document(eventoId)
