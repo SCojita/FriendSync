@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,8 @@ public class HomeActivity extends AppCompatActivity {
     private List<Noticia> listaNoticias;
     private NoticiasAdapter noticiasAdapter;
     private TextView tvSinNoticias;
+    private LinearLayout botonesLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,9 +77,28 @@ public class HomeActivity extends AppCompatActivity {
         noticiasAdapter = new NoticiasAdapter(listaNoticias);
         recyclerNoticias.setAdapter(noticiasAdapter);
 
+        recyclerNoticias.setAlpha(0f);
+        recyclerNoticias.animate()
+                .alpha(1f)
+                .setDuration(800)
+                .setStartDelay(300)
+                .start();
+
         cargarNoticiasDesdeFirestore();
 
         tvSinNoticias = findViewById(R.id.tvSinNoticias);
+
+        botonesLayout = findViewById(R.id.botonesLayout);
+
+        botonesLayout.setTranslationY(100f);
+        botonesLayout.setAlpha(0f);
+
+        botonesLayout.animate()
+                .translationY(0f)
+                .alpha(1f)
+                .setDuration(800)
+                .setStartDelay(400)
+                .start();
 
         MaterialButton btnCrearEvento = findViewById(R.id.btnCrearEvento);
         MaterialButton btnVerEventos = findViewById(R.id.btnVerEventos);
