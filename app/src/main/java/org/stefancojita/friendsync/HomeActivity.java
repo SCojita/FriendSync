@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -76,6 +77,22 @@ public class HomeActivity extends AppCompatActivity {
         cargarNoticiasDesdeFirestore();
 
         tvSinNoticias = findViewById(R.id.tvSinNoticias);
+
+        MaterialButton btnCrearEvento = findViewById(R.id.btnCrearEvento);
+        MaterialButton btnVerEventos = findViewById(R.id.btnVerEventos);
+        MaterialButton btnMisEventos = findViewById(R.id.btnMisEventos);
+
+        btnCrearEvento.setOnClickListener(v -> {
+            startActivity(new Intent(this, CrearEventoActivity.class));
+        });
+
+        btnVerEventos.setOnClickListener(v -> {
+            startActivity(new Intent(this, ListaEventosActivity.class));
+        });
+
+        btnMisEventos.setOnClickListener(v -> {
+            startActivity(new Intent(this, MisEventosActivity.class));
+        });
 
     }
 

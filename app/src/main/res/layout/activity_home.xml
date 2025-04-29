@@ -79,6 +79,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCrearEvento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Crear nuevo evento"
+            android:layout_marginBottom="12dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="@color/colorPrimary"
+            android:textColor="@android:color/white" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVerEventos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ver todos los eventos"
+            android:layout_marginBottom="12dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="@color/colorPrimary"
+            android:textColor="@android:color/white" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMisEventos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mis eventos"
+            app:cornerRadius="16dp"
+            app:backgroundTint="@color/colorPrimary"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 
 </LinearLayout>
 
