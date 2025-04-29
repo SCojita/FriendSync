@@ -29,7 +29,7 @@ public class MisEventosActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lista_eventos); // Puedes usar el mismo layout
+        setContentView(R.layout.activity_lista_eventos);
 
         recyclerMisEventos = findViewById(R.id.recyclerEventos);
         recyclerMisEventos.setLayoutManager(new LinearLayoutManager(this));
@@ -37,7 +37,7 @@ public class MisEventosActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false; // No hacemos nada al pulsar "Enter"
+                return false;
             }
 
             @Override
@@ -55,12 +55,13 @@ public class MisEventosActivity extends AppCompatActivity {
 
     private void cargarMisEventos() {
         db.collection("eventos")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+                .addSnapshotListener((querySnapshot, error) -> {
                     listaMisEventos.clear();
                     listaIds.clear();
 
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    if (error != null || querySnapshot == null) return;
+
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
                         Evento evento = doc.toObject(Evento.class);
                         String id = doc.getId();
 
@@ -78,10 +79,7 @@ public class MisEventosActivity extends AppCompatActivity {
 
                     adapter = new EventoAdapter(listaMisEventos, listaIds);
                     recyclerMisEventos.setAdapter(adapter);
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al cargar tus eventos", Toast.LENGTH_SHORT).show()
-                );
+                });
     }
 
     private void filtrarEventos(String texto) {
@@ -99,7 +97,6 @@ public class MisEventosActivity extends AppCompatActivity {
             }
         }
 
-        // Actualizamos el adaptador con la lista filtrada
         adapter = new EventoAdapter(listaFiltrada, listaIdsFiltrada);
         recyclerMisEventos.setAdapter(adapter);
     }
