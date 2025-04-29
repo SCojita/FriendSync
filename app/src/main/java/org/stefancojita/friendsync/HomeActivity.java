@@ -35,7 +35,6 @@ public class HomeActivity extends AppCompatActivity {
     private TextView tvSinNoticias;
     private LinearLayout botonesLayout;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,7 +146,6 @@ public class HomeActivity extends AppCompatActivity {
                                             listaNoticias.add(new Noticia(aliasCreador, tituloEvento, fechaLugar));
                                             noticiasAdapter.notifyDataSetChanged();
 
-                                            // Ocultar el mensaje de "No hay noticias"
                                             tvSinNoticias.setVisibility(View.GONE);
                                         }
                                     });

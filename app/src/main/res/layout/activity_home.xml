@@ -100,7 +100,7 @@
             android:id="@+id/btnVerEventos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ver eventos"
+            android:text="Ver todos los eventos"
             android:layout_marginBottom="12dp"
             app:cornerRadius="16dp"
             app:backgroundTint="@color/colorPrimary"

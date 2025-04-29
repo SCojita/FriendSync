@@ -48,7 +48,7 @@ public class ListaEventosActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false; // No hacemos nada al pulsar "Enter"
+                return false;
             }
 
             @Override
@@ -65,22 +65,21 @@ public class ListaEventosActivity extends AppCompatActivity {
 
     private void cargarEventosDesdeFirestore() {
         db.collection("eventos")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+                .addSnapshotListener((querySnapshot, error) -> {
                     listaEventos.clear();
                     listaIds.clear();
+
+                    if (error != null || querySnapshot == null) return;
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                     Date fechaActual = soloFechaActual();
 
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
                         Evento evento = doc.toObject(Evento.class);
                         String fechaStr = evento.getFecha();
-
                         Boolean esPublico = doc.getBoolean("publico");
-                        if (!Boolean.TRUE.equals(esPublico)) {
-                            continue;
-                        }
+
+                        if (!Boolean.TRUE.equals(esPublico)) continue;
 
                         try {
                             Date fechaEvento = sdf.parse(fechaStr);
@@ -101,18 +100,15 @@ public class ListaEventosActivity extends AppCompatActivity {
                             Date fecha2 = sdf.parse(e2.getFecha());
                             return fecha1.compareTo(fecha2);
                         } catch (ParseException e) {
-                            e.printStackTrace();
                             return 0;
                         }
                     });
 
                     adapter = new EventoAdapter(listaEventos, listaIds);
                     recyclerEventos.setAdapter(adapter);
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al cargar eventos", Toast.LENGTH_SHORT).show()
-                );
+                });
     }
+
 
 
     private void filtrarEventos(String texto) {
@@ -130,7 +126,6 @@ public class ListaEventosActivity extends AppCompatActivity {
             }
         }
 
-        // Actualizamos el adaptador con la lista filtrada
         adapter = new EventoAdapter(listaFiltrada, listaIdsFiltrada);
         recyclerEventos.setAdapter(adapter);
     }
@@ -143,7 +138,5 @@ public class ListaEventosActivity extends AppCompatActivity {
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
     }
-
-
 
 }
