@@ -122,48 +122,44 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("eventos")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+                .addSnapshotListener((querySnapshot, error) -> {
                     listaNoticias.clear();
+                    tvSinNoticias.setVisibility(View.VISIBLE);
 
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        boolean hayNoticias = false;
+                    if (error != null || querySnapshot == null) return;
 
-                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                            String tituloEvento = doc.getString("titulo");
-                            String fechaEvento = doc.getString("fecha");
-                            String lugarEvento = doc.getString("lugar");
-                            String uidCreador = doc.getString("uid_usuario");
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        String tituloEvento = doc.getString("titulo");
+                        String fechaEvento = doc.getString("fecha");
+                        String lugarEvento = doc.getString("lugar");
+                        String uidCreador = doc.getString("uid_usuario");
+                        Boolean esPublico = doc.getBoolean("publico");
 
-                            if (tituloEvento != null && fechaEvento != null && lugarEvento != null && uidCreador != null) {
-                                db.collection("users").document(uidCreador)
-                                        .get()
-                                        .addOnSuccessListener(userDoc -> {
-                                            if (userDoc.exists()) {
-                                                String aliasCreador = userDoc.getString("alias");
-                                                if (aliasCreador == null) aliasCreador = "Usuario";
+                        if (tituloEvento != null && fechaEvento != null && lugarEvento != null && uidCreador != null && Boolean.TRUE.equals(esPublico)) {
+                            db.collection("users").document(uidCreador)
+                                    .get()
+                                    .addOnSuccessListener(userDoc -> {
+                                        if (userDoc.exists()) {
+                                            String aliasCreador = userDoc.getString("alias");
+                                            if (aliasCreador == null) aliasCreador = "Usuario";
 
-                                                String fechaLugar = fechaEvento + " - " + lugarEvento;
-                                                listaNoticias.add(new Noticia(aliasCreador, tituloEvento, fechaLugar));
-                                                noticiasAdapter.notifyDataSetChanged();
+                                            String fechaLugar = fechaEvento + " - " + lugarEvento;
+                                            listaNoticias.add(new Noticia(aliasCreador, tituloEvento, fechaLugar));
+                                            noticiasAdapter.notifyDataSetChanged();
 
-
-                                                tvSinNoticias.setVisibility(View.GONE);
-                                            }
-                                        });
-
-                                hayNoticias = true;
-                            }
+                                            // Ocultar el mensaje de "No hay noticias"
+                                            tvSinNoticias.setVisibility(View.GONE);
+                                        }
+                                    });
                         }
+                    }
 
-                        if (!hayNoticias) {
-                            tvSinNoticias.setVisibility(View.VISIBLE);
-                        }
-                    } else {
+                    if (listaNoticias.isEmpty()) {
                         tvSinNoticias.setVisibility(View.VISIBLE);
                     }
                 });
     }
+
 
 }
 
