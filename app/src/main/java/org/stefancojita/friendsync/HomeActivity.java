@@ -2,33 +2,55 @@ package org.stefancojita.friendsync;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private TextView tvWelcome;
-    private Button btnCrearEvento, btnVerEventos, btnLogout;
+    private ImageView btnSettings, btnCerrarSesion;
+    private TextView tvBienvenido;
+    private List<Noticia> listaNoticias;
+    private NoticiasAdapter noticiasAdapter;
+    private TextView tvSinNoticias;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        tvWelcome = findViewById(R.id.tvWelcome);
-        btnCrearEvento = findViewById(R.id.btnCrearEvento);
-        btnVerEventos = findViewById(R.id.btnVerEventos);
-        btnLogout = findViewById(R.id.btnLogout);
+        btnSettings = findViewById(R.id.btnSettings);
+        btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
+        tvBienvenido = findViewById(R.id.tvBienvenido);
+
+        btnSettings.setOnClickListener(v -> {
+            Toast.makeText(this, "Ir a Ajustes (pendiente)", Toast.LENGTH_SHORT).show();
+        });
+
+        btnCerrarSesion.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -39,34 +61,70 @@ public class HomeActivity extends AppCompatActivity {
                     .addOnSuccessListener(document -> {
                         if (document.exists()) {
                             String alias = document.getString("alias");
-                            String correo = user.getEmail();
-                            tvWelcome.setText("¡Bienvenido, " + alias + " (" + correo + ")!");
+                            tvBienvenido.setText("¡Hola, " + alias + "!");
                         }
                     });
         }
 
-        btnCrearEvento.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, CrearEventoActivity.class);
-            startActivity(intent);
-        });
+        RecyclerView recyclerNoticias = findViewById(R.id.recyclerNoticias);
+        recyclerNoticias.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        btnVerEventos.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, ListaEventosActivity.class);
-            startActivity(intent);
-        });
+        listaNoticias = new ArrayList<>();
+        noticiasAdapter = new NoticiasAdapter(listaNoticias);
+        recyclerNoticias.setAdapter(noticiasAdapter);
 
-        Button btnMisEventos = findViewById(R.id.btnMisEventos);
-        btnMisEventos.setOnClickListener(v -> {
-            startActivity(new Intent(this, MisEventosActivity.class));
-        });
+        cargarNoticiasDesdeFirestore();
 
-        btnLogout.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        });
+        tvSinNoticias = findViewById(R.id.tvSinNoticias);
+
     }
+
+    private void cargarNoticiasDesdeFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("eventos")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    listaNoticias.clear();
+
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        boolean hayNoticias = false;
+
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            String tituloEvento = doc.getString("titulo");
+                            String fechaEvento = doc.getString("fecha");
+                            String lugarEvento = doc.getString("lugar");
+                            String uidCreador = doc.getString("uid_usuario");
+
+                            if (tituloEvento != null && fechaEvento != null && lugarEvento != null && uidCreador != null) {
+                                db.collection("users").document(uidCreador)
+                                        .get()
+                                        .addOnSuccessListener(userDoc -> {
+                                            if (userDoc.exists()) {
+                                                String aliasCreador = userDoc.getString("alias");
+                                                if (aliasCreador == null) aliasCreador = "Usuario";
+
+                                                String fechaLugar = fechaEvento + " - " + lugarEvento;
+                                                listaNoticias.add(new Noticia(aliasCreador, tituloEvento, fechaLugar));
+                                                noticiasAdapter.notifyDataSetChanged();
+
+
+                                                tvSinNoticias.setVisibility(View.GONE);
+                                            }
+                                        });
+
+                                hayNoticias = true;
+                            }
+                        }
+
+                        if (!hayNoticias) {
+                            tvSinNoticias.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        tvSinNoticias.setVisibility(View.VISIBLE);
+                    }
+                });
+    }
+
 }
 

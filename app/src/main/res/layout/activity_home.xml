@@ -1,48 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp"
-    android:background="#FFFFFF">
+    android:background="@color/colorSurface">
+
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorPrimary">
+
+        <ImageView
+            android:id="@+id/btnSettings"
+            android:src="@drawable/ic_settings"
+            android:contentDescription="Ajustes"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:tint="@color/colorOnSecondary" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="0dp" />
+
+        <TextView
+            android:id="@+id/tvBienvenido"
+            android:text="¡Bienvenido, usuario!"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:layout_marginEnd="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/btnCerrarSesion"
+            android:src="@drawable/ic_logout"
+            android:contentDescription="Cerrar sesión"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:tint="#F24E4E" />
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/tvWelcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="¡Bienvenido!"
-        android:textSize="24sp"
+        android:id="@+id/tvNoticiasTitulo"
+        android:text="Noticias"
         android:textStyle="bold"
-        android:layout_marginBottom="32dp" />
-
-    <Button
-        android:id="@+id/btnCrearEvento"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Crear nuevo evento" />
-
-    <Button
-        android:id="@+id/btnVerEventos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ver eventos"
-        android:layout_marginTop="16dp" />
-
-    <Button
-        android:id="@+id/btnMisEventos"
-        android:text="Mis eventos"
-        android:layout_marginTop="16dp"
-        android:layout_width="match_parent"
+        android:textSize="18sp"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-
-    <Button
-        android:id="@+id/btnLogout"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerNoticias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cerrar sesión"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="#D32F2F"
-        android:textColor="#FFFFFF"/>
+        android:layout_marginTop="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp" />
+
+    <TextView
+        android:id="@+id/tvSinNoticias"
+        android:text="No hay noticias disponibles"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
 </LinearLayout>
+
+
