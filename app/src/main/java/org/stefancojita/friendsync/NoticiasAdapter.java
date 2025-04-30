@@ -29,7 +29,7 @@ public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.Notici
     @Override
     public void onBindViewHolder(@NonNull NoticiaViewHolder holder, int position) {
         Noticia noticia = listaNoticias.get(position);
-        holder.tvAliasCreador.setText(noticia.getAliasCreador());
+        holder.tvAliasCreador.setText(noticia.getAliasCreador() + " ha creado este evento:");
         holder.tvNombreEvento.setText(noticia.getNombreEvento());
         holder.tvFechaLugar.setText(noticia.getFechaLugar());
     }

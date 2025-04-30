@@ -14,9 +14,9 @@
 
         <TextView
             android:id="@+id/tvAliasCreador"
-            android:text="Alias creador"
+            android:text="Usuario ha creado este evento:"
             android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
