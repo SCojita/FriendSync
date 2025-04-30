@@ -1,7 +1,7 @@
 package org.stefancojita.friendsync;
 
 import android.os.Bundle;
-import android.widget.SearchView;
+import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;

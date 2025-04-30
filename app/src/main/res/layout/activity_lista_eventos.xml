@@ -1,27 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="@color/colorSurface">
 
     <TextView
-        android:text="Eventos disponibles"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="12dp"
+        android:id="@+id/tvTituloEventos"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Eventos"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="16dp" />
 
-    <SearchView
+    <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
-        android:queryHint="Buscar por título o lugar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"/>
+        android:queryHint="Buscar por título o lugar"
+        android:layout_marginBottom="16dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerEventos"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvSinEventos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No hay eventos disponibles"
+        android:textColor="@android:color/darker_gray"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:layout_marginTop="16dp" />
 </LinearLayout>
