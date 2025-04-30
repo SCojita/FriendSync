@@ -46,6 +46,8 @@ public class DetalleEventoActivity extends AppCompatActivity {
     private Button btnEliminarEvento;
     private Button btnEditarEvento;
     private TextView tvCreadorEvento;
+    private TextView tvSinAsistentes;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +72,11 @@ public class DetalleEventoActivity extends AppCompatActivity {
             intent.putExtra("eventoId", eventoId);
             startActivity(intent);
         });
+        tvSinAsistentes = findViewById(R.id.tvSinAsistentes);
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        // Obtener ID del evento desde el intent
         eventoId = getIntent().getStringExtra("eventoId");
 
         if (eventoId != null) {
@@ -100,20 +102,6 @@ public class DetalleEventoActivity extends AppCompatActivity {
                     tvDescripcion.setText("Descripción: " + documentSnapshot.getString("descripcion"));
 
                     creatorUid = documentSnapshot.getString("uid_usuario");
-
-                    if (creatorUid != null) {
-                        db.collection("users").document(creatorUid)
-                                .get()
-                                .addOnSuccessListener(userDoc -> {
-                                    if (userDoc.exists()) {
-                                        String alias = userDoc.getString("alias");
-                                        if (alias != null) {
-                                            tvCreadorEvento.setText("Autor: " + alias);
-                                        }
-                                    }
-                                });
-                    }
-
                     asistentes = (List<String>) documentSnapshot.get("asistentes");
 
                     if (creatorUid != null && creatorUid.equals(currentUser.getUid())) {
@@ -130,8 +118,24 @@ public class DetalleEventoActivity extends AppCompatActivity {
                         btnUnirse.setOnClickListener(v -> unirseAlEvento());
                     }
 
+                    if (creatorUid != null) {
+                        db.collection("users").document(creatorUid)
+                                .get()
+                                .addOnSuccessListener(userDoc -> {
+                                    if (userDoc.exists()) {
+                                        String alias = userDoc.getString("alias");
+                                        if (alias != null) {
+                                            tvCreadorEvento.setText("Creado por: " + alias);
+                                        }
+                                    }
+                                });
+                    }
+
                     if (asistentes != null && !asistentes.isEmpty()) {
+                        tvSinAsistentes.setVisibility(View.GONE);
+                        recyclerAsistentes.setVisibility(View.VISIBLE);
                         listaAsistentes.clear();
+
                         for (String uid : asistentes) {
                             db.collection("users")
                                     .document(uid)
@@ -143,9 +147,13 @@ public class DetalleEventoActivity extends AppCompatActivity {
                                         asistenteAdapter.notifyDataSetChanged();
                                     });
                         }
+                    } else {
+                        recyclerAsistentes.setVisibility(View.GONE);
+                        tvSinAsistentes.setVisibility(View.VISIBLE);
                     }
                 });
     }
+
 
 
     private void unirseAlEvento() {
