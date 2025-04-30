@@ -1,62 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="24dp">
+    android:background="@color/colorSurface">
 
     <LinearLayout
+        android:orientation="vertical"
+        android:padding="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:text="Crea un nuevo evento"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginBottom="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Título del evento"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTitulo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Fecha del evento"
-            android:layout_marginBottom="12dp"
-            >
+            android:hint="Fecha"
+            android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFecha"
+                android:focusable="false"
+                android:clickable="true"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Lugar del evento"
-            android:layout_marginBottom="12dp">
+            android:hint="Lugar"
+            android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLugar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Descripción"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDescripcion"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:minLines="3"
+                android:maxLines="5"
+                android:gravity="top" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.checkbox.MaterialCheckBox
@@ -64,16 +79,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Evento público"
-            android:checked="true" />
+            android:checked="true"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginBottom="24dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGuardarEvento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Guardar evento"
-            android:layout_marginTop="24dp"
             app:cornerRadius="16dp"
-            app:iconPadding="12dp"/>
+            app:backgroundTint="@color/colorPrimary"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 </ScrollView>
