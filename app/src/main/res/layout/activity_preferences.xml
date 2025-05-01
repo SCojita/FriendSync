@@ -51,6 +51,16 @@
             android:layout_height="wrap_content" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCambiarContrasena"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cambiar contraseña"
+            app:cornerRadius="16dp"
+            android:layout_marginTop="12dp"
+            app:backgroundTint="@color/colorPrimary"
+            android:textColor="@android:color/white" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEliminarCuenta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

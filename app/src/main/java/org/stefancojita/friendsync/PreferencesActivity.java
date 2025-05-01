@@ -2,20 +2,23 @@ package org.stefancojita.friendsync;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import androidx.appcompat.widget.SwitchCompat;
+import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class PreferencesActivity extends AppCompatActivity {
 
     // private SwitchCompat switchTema;
-    private SharedPreferences sharedPreferences;
+    private MaterialButton btnCambiarContrasena;
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +33,7 @@ public class PreferencesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_preferences);
 
 //        switchTema = findViewById(R.id.switchTema);
-        sharedPreferences = getSharedPreferences("preferencias", MODE_PRIVATE);
+        pref = getSharedPreferences("preferencias", MODE_PRIVATE);
 
 
 //        boolean temaOscuro = sharedPreferences.getBoolean("temaOscuro", false);
@@ -47,6 +50,19 @@ public class PreferencesActivity extends AppCompatActivity {
 //            AppCompatDelegate.setDefaultNightMode(
 //                    isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 //        });
+
+        btnCambiarContrasena = findViewById(R.id.btnCambiarContrasena);
+        btnCambiarContrasena.setOnClickListener(v -> {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                FirebaseAuth.getInstance().sendPasswordResetEmail(user.getEmail())
+                        .addOnSuccessListener(unused ->
+                                Toast.makeText(this, "Se ha enviado un correo para cambiar la contraseña.", Toast.LENGTH_LONG).show())
+                        .addOnFailureListener(e ->
+                                Toast.makeText(this, "Error al enviar el correo: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            }
+        });
+
 
     }
 }
