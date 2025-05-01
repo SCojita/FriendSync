@@ -1,7 +1,31 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.FriendSync" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <!-- Tema oscuro -->
+    <style name="Theme.FriendSync" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="textAllCaps">false</item>
+        <item name="colorPrimary">#00C853</item> <!-- verde fuerte -->
+        <item name="colorPrimaryVariant">#009624</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+
+        <item name="colorSecondary">#80CBC4</item>
+        <item name="colorSecondaryVariant">#4DB6AC</item>
+        <item name="colorOnSecondary">#000000</item>
+
+        <item name="android:windowBackground">#121212</item> <!-- fondo general oscuro -->
+        <item name="colorSurface">#1E1E1E</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="android:colorBackground">#121212</item>
+        <item name="colorOnBackground">#FFFFFF</item>
+
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:navigationBarColor">#121212</item>
+        <item name="android:statusBarColor">#121212</item>
+
+        <!-- Fuente y diseño general -->
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body1</item>
+
+        <!-- Iconos -->
+        <item name="colorControlHighlight">#2E7D32</item>
+        <item name="colorButtonNormal">#2E7D32</item>
     </style>
 </resources>

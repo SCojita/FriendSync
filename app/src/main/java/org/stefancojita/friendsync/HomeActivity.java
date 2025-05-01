@@ -41,12 +41,12 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         btnSettings = findViewById(R.id.btnSettings);
+        btnSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, PreferencesActivity.class);
+            startActivity(intent);
+        });
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
         tvBienvenido = findViewById(R.id.tvBienvenido);
-
-        btnSettings.setOnClickListener(v -> {
-            Toast.makeText(this, "Ir a Ajustes (pendiente)", Toast.LENGTH_SHORT).show();
-        });
 
         btnCerrarSesion.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
