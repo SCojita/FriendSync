@@ -1,6 +1,7 @@
 package org.stefancojita.friendsync;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,11 +14,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class EditarEventoActivity extends AppCompatActivity {
 
-    private EditText etTitulo, etFecha, etLugar, etDescripcion;
+    private EditText etTitulo, etFecha, etHora, etLugar, etDescripcion;
     private Button btnGuardarCambios;
     private FirebaseFirestore db;
     private String eventoId;
@@ -29,8 +31,13 @@ public class EditarEventoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crear_evento);
 
         etTitulo = findViewById(R.id.etTitulo);
+
         etFecha = findViewById(R.id.etFecha);
         etFecha.setOnClickListener(v -> mostrarDatePicker());
+
+        etHora = findViewById(R.id.etHora);
+        etHora.setOnClickListener(v -> mostrarSelectorHora());
+
         etLugar = findViewById(R.id.etLugar);
         etDescripcion = findViewById(R.id.etDescripcion);
         checkboxPublico = findViewById(R.id.checkboxPublico);
@@ -78,9 +85,25 @@ public class EditarEventoActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+    private void mostrarSelectorHora() {
+        final Calendar calendar = Calendar.getInstance();
+        int hora = calendar.get(Calendar.HOUR_OF_DAY);
+        int minuto = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                (view, hourOfDay, minute) -> {
+                    String horaFormateada = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+                    etHora.setText(horaFormateada);
+                },
+                hora, minuto, true);
+
+        timePickerDialog.show();
+    }
+
     private void guardarCambios() {
         String titulo = etTitulo.getText().toString().trim();
         String fecha = etFecha.getText().toString().trim();
+        String hora = etHora.getText().toString().trim();
         String lugar = etLugar.getText().toString().trim();
         String descripcion = etDescripcion.getText().toString().trim();
         boolean esPublico = checkboxPublico.isChecked();
@@ -106,6 +129,7 @@ public class EditarEventoActivity extends AppCompatActivity {
         Map<String, Object> actualizacion = new HashMap<>();
         actualizacion.put("titulo", titulo);
         actualizacion.put("fecha", fecha);
+        actualizacion.put("hora", hora);
         actualizacion.put("lugar", lugar);
         actualizacion.put("descripcion", descripcion);
         actualizacion.put("publico", esPublico);
@@ -117,5 +141,6 @@ public class EditarEventoActivity extends AppCompatActivity {
                     finish();
                 });
     }
+
 }
 

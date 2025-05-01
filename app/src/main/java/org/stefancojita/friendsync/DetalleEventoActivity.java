@@ -33,7 +33,7 @@ import java.util.List;
 
 public class DetalleEventoActivity extends AppCompatActivity {
 
-    private TextView tvTitulo, tvFecha, tvLugar, tvDescripcion;
+    private TextView tvTitulo, tvFecha, tvHora, tvLugar, tvDescripcion;
     private Button btnUnirse;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -57,6 +57,7 @@ public class DetalleEventoActivity extends AppCompatActivity {
         tvCreadorEvento = findViewById(R.id.tvCreadorEvento);
         tvTitulo = findViewById(R.id.tvTitulo);
         tvFecha = findViewById(R.id.tvFecha);
+        tvHora = findViewById(R.id.tvHora);
         tvLugar = findViewById(R.id.tvLugar);
         tvDescripcion = findViewById(R.id.tvDescripcion);
         btnUnirse = findViewById(R.id.btnUnirse);
@@ -98,6 +99,7 @@ public class DetalleEventoActivity extends AppCompatActivity {
 
                     tvTitulo.setText(documentSnapshot.getString("titulo"));
                     tvFecha.setText("Fecha: " + documentSnapshot.getString("fecha"));
+                    tvHora.setText("Hora: " + documentSnapshot.getString("hora"));
                     tvLugar.setText("Lugar: " + documentSnapshot.getString("lugar"));
                     tvDescripcion.setText("Descripción: " + documentSnapshot.getString("descripcion"));
 

@@ -1,6 +1,7 @@
 package org.stefancojita.friendsync;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,11 +20,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class CrearEventoActivity extends AppCompatActivity {
 
-    private EditText etTitulo, etFecha, etLugar, etDescripcion;
+    private EditText etTitulo, etFecha, etHora, etLugar, etDescripcion;
     private Button btnGuardarEvento;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -35,8 +37,13 @@ public class CrearEventoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crear_evento);
 
         etTitulo = findViewById(R.id.etTitulo);
+
         etFecha = findViewById(R.id.etFecha);
         etFecha.setOnClickListener(v -> mostrarDatePicker());
+
+        etHora = findViewById(R.id.etHora);
+        etHora.setOnClickListener(v -> mostrarSelectorHora());
+
         etLugar = findViewById(R.id.etLugar);
         etDescripcion = findViewById(R.id.etDescripcion);
         btnGuardarEvento = findViewById(R.id.btnGuardarEvento);
@@ -64,10 +71,25 @@ public class CrearEventoActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+    private void mostrarSelectorHora() {
+        final Calendar calendar = Calendar.getInstance();
+        int hora = calendar.get(Calendar.HOUR_OF_DAY);
+        int minuto = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                (view, hourOfDay, minute) -> {
+                    String horaFormateada = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+                    etHora.setText(horaFormateada);
+                },
+                hora, minuto, true);
+
+        timePickerDialog.show();
+    }
 
     private void guardarEvento() {
         String titulo = etTitulo.getText().toString().trim();
         String fecha = etFecha.getText().toString().trim();
+        String hora = etHora.getText().toString().trim();
         String lugar = etLugar.getText().toString().trim();
         String descripcion = etDescripcion.getText().toString().trim();
         boolean esPublico = checkboxPublico.isChecked();
@@ -93,6 +115,7 @@ public class CrearEventoActivity extends AppCompatActivity {
         Map<String, Object> evento = new HashMap<>();
         evento.put("titulo", titulo);
         evento.put("fecha", fecha);
+        evento.put("hora", hora);
         evento.put("lugar", lugar);
         evento.put("descripcion", descripcion);
         evento.put("publico", esPublico);
@@ -102,7 +125,7 @@ public class CrearEventoActivity extends AppCompatActivity {
                 .add(evento)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(this, "Evento guardado con éxito", Toast.LENGTH_SHORT).show();
-                    finish(); // volver a la pantalla anterior
+                    finish();
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error al guardar el evento", Toast.LENGTH_SHORT).show()
