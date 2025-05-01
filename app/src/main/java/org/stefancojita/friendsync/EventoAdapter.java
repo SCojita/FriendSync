@@ -34,7 +34,16 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
     public void onBindViewHolder(@NonNull EventoViewHolder holder, int position) {
         Evento evento = listaEventos.get(position);
         holder.tvTitulo.setText(evento.getTitulo());
-        holder.tvFecha.setText("Fecha: " + evento.getFecha());
+
+        String fecha = evento.getFecha();
+        String hora = evento.getHora();
+
+        String fechaHora = (hora != null && !hora.isEmpty())
+                ? "Fecha: " + fecha + " (" + hora + ")"
+                : "Fecha: " + fecha;
+
+        holder.tvFecha.setText(fechaHora);
+
         holder.tvLugar.setText("Lugar: " + evento.getLugar());
 
         String autor = listaAutores.get(position);
