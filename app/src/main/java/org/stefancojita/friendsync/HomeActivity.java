@@ -132,6 +132,7 @@ public class HomeActivity extends AppCompatActivity {
                         String fechaEvento = doc.getString("fecha");
                         String lugarEvento = doc.getString("lugar");
                         String uidCreador = doc.getString("uid_usuario");
+                        String horaEvento = doc.getString("hora");
                         Boolean esPublico = doc.getBoolean("publico");
 
                         if (tituloEvento != null && fechaEvento != null && lugarEvento != null && uidCreador != null && Boolean.TRUE.equals(esPublico)) {
@@ -142,7 +143,10 @@ public class HomeActivity extends AppCompatActivity {
                                             String aliasCreador = userDoc.getString("alias");
                                             if (aliasCreador == null) aliasCreador = "Usuario";
 
-                                            String fechaLugar = fechaEvento + " - " + lugarEvento;
+                                            String fechaLugar = (horaEvento != null && !horaEvento.isEmpty())
+                                                    ? fechaEvento + " (" + horaEvento + ") - " + lugarEvento
+                                                    : fechaEvento + " - " + lugarEvento;
+
                                             listaNoticias.add(new Noticia(aliasCreador, tituloEvento, fechaLugar));
                                             noticiasAdapter.notifyDataSetChanged();
 
@@ -157,7 +161,6 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 });
     }
-
 
 }
 

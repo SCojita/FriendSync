@@ -101,7 +101,13 @@ public class DetalleEventoActivity extends AppCompatActivity {
                     tvFecha.setText("Fecha: " + documentSnapshot.getString("fecha"));
                     tvHora.setText("Hora: " + documentSnapshot.getString("hora"));
                     tvLugar.setText("Lugar: " + documentSnapshot.getString("lugar"));
-                    tvDescripcion.setText("Descripción: " + documentSnapshot.getString("descripcion"));
+
+                    String descripcion = documentSnapshot.getString("descripcion");
+                    if (descripcion == null || descripcion.trim().isEmpty()) {
+                        tvDescripcion.setText("Descripción: No hay descripción.");
+                    } else {
+                        tvDescripcion.setText("Descripción: " + descripcion);
+                    }
 
                     creatorUid = documentSnapshot.getString("uid_usuario");
                     asistentes = (List<String>) documentSnapshot.get("asistentes");

@@ -59,6 +59,7 @@ public class EditarEventoActivity extends AppCompatActivity {
                     if (document.exists()) {
                         etTitulo.setText(document.getString("titulo"));
                         etFecha.setText(document.getString("fecha"));
+                        etHora.setText(document.getString("hora"));
                         etLugar.setText(document.getString("lugar"));
                         etDescripcion.setText(document.getString("descripcion"));
 
@@ -67,7 +68,6 @@ public class EditarEventoActivity extends AppCompatActivity {
                     }
                 });
     }
-
 
     private void mostrarDatePicker() {
         final Calendar calendario = Calendar.getInstance();
