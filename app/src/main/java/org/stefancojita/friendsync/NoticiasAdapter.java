@@ -1,5 +1,6 @@
 package org.stefancojita.friendsync;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,12 @@ public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.Notici
         holder.tvAliasCreador.setText(noticia.getAliasCreador() + " ha creado este evento:");
         holder.tvNombreEvento.setText(noticia.getNombreEvento());
         holder.tvFechaLugar.setText(noticia.getFechaLugar());
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), DetalleEventoActivity.class);
+            intent.putExtra("eventoId", noticia.getEventoId());
+            v.getContext().startActivity(intent);
+        });
+
     }
 
     @Override

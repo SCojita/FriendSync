@@ -2,19 +2,35 @@ package org.stefancojita.friendsync;
 
 public class Noticia {
 
-    private String aliasCreador;
-    private String nombreEvento;
-    private String fechaLugar;
+    private String autor;
+    private String titulo;
+    private String detalle;
+    private String eventoId;
 
-    public Noticia(String aliasCreador, String nombreEvento, String fechaLugar) {
-        this.aliasCreador = aliasCreador;
-        this.nombreEvento = nombreEvento;
-        this.fechaLugar = fechaLugar;
+    public Noticia(String autor, String titulo, String detalle, String eventoId) {
+        this.autor = autor;
+        this.titulo = titulo;
+        this.detalle = detalle;
+        this.eventoId = eventoId;
     }
 
-    public String getAliasCreador() { return aliasCreador; }
-    public String getNombreEvento() { return nombreEvento; }
-    public String getFechaLugar() { return fechaLugar; }
+    // Getters.
+    public String getEventoId() {
+        return eventoId;
+    }
+
+    public String getAliasCreador() {
+        return autor;
+    }
+
+    public String getNombreEvento() {
+        return titulo;
+    }
+
+    public String getFechaLugar() {
+        return detalle;
+    }
 
 }
+
 

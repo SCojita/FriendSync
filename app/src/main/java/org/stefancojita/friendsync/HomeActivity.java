@@ -147,7 +147,7 @@ public class HomeActivity extends AppCompatActivity {
                                                     ? fechaEvento + " (" + horaEvento + ") - " + lugarEvento
                                                     : fechaEvento + " - " + lugarEvento;
 
-                                            listaNoticias.add(new Noticia(aliasCreador, tituloEvento, fechaLugar));
+                                            listaNoticias.add(new Noticia(aliasCreador, tituloEvento, fechaLugar, doc.getId()));
                                             noticiasAdapter.notifyDataSetChanged();
 
                                             tvSinNoticias.setVisibility(View.GONE);
