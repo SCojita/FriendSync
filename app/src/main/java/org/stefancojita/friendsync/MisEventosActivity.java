@@ -20,8 +20,9 @@ public class MisEventosActivity extends AppCompatActivity {
 
     private RecyclerView recyclerMisEventos;
     private EventoAdapter adapter;
-    private List<Evento> listaMisEventos = new ArrayList<>();
-    private List<String> listaIds = new ArrayList<>();
+    private List<Evento> listaMisEventos;
+    private List<String> listaIds;
+    private List<String> listaAutores;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
     private SearchView searchView;
@@ -33,6 +34,13 @@ public class MisEventosActivity extends AppCompatActivity {
 
         recyclerMisEventos = findViewById(R.id.recyclerEventos);
         recyclerMisEventos.setLayoutManager(new LinearLayoutManager(this));
+
+        listaMisEventos = new ArrayList<>();
+        listaIds = new ArrayList<>();
+        listaAutores = new ArrayList<>();
+        adapter = new EventoAdapter(listaMisEventos, listaIds, listaAutores);
+        recyclerMisEventos.setAdapter(adapter);
+
         searchView = findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -58,13 +66,11 @@ public class MisEventosActivity extends AppCompatActivity {
                 .addSnapshotListener((querySnapshot, error) -> {
                     listaMisEventos.clear();
                     listaIds.clear();
-
-                    if (error != null || querySnapshot == null) return;
+                    listaAutores.clear();
 
                     for (QueryDocumentSnapshot doc : querySnapshot) {
                         Evento evento = doc.toObject(Evento.class);
                         String id = doc.getId();
-
                         String creador = doc.getString("uid_usuario");
                         List<String> asistentes = (List<String>) doc.get("asistentes");
 
@@ -74,32 +80,39 @@ public class MisEventosActivity extends AppCompatActivity {
                         if (soyCreador || estoyUnido) {
                             listaMisEventos.add(evento);
                             listaIds.add(id);
+
+                            db.collection("users").document(creador)
+                                    .get()
+                                    .addOnSuccessListener(userDoc -> {
+                                        String alias = userDoc.getString("alias");
+                                        if (alias == null) alias = "Usuario";
+                                        listaAutores.add(alias);
+                                        adapter.notifyDataSetChanged();
+                                    });
                         }
                     }
-
-                    adapter = new EventoAdapter(listaMisEventos, listaIds);
-                    recyclerMisEventos.setAdapter(adapter);
                 });
     }
 
     private void filtrarEventos(String texto) {
         List<Evento> listaFiltrada = new ArrayList<>();
         List<String> listaIdsFiltrada = new ArrayList<>();
+        List<String> listaAutoresFiltrada = new ArrayList<>();
 
         for (int i = 0; i < listaMisEventos.size(); i++) {
             Evento evento = listaMisEventos.get(i);
             String id = listaIds.get(i);
+            String autor = listaAutores.get(i);
 
             if (evento.getTitulo().toLowerCase().contains(texto.toLowerCase()) ||
                     evento.getLugar().toLowerCase().contains(texto.toLowerCase())) {
                 listaFiltrada.add(evento);
                 listaIdsFiltrada.add(id);
+                listaAutoresFiltrada.add(autor);
             }
         }
 
-        adapter = new EventoAdapter(listaFiltrada, listaIdsFiltrada);
+        adapter = new EventoAdapter(listaFiltrada, listaIdsFiltrada, listaAutoresFiltrada);
         recyclerMisEventos.setAdapter(adapter);
     }
-
 }
-

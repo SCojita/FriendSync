@@ -13,11 +13,13 @@ import java.util.List;
 public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder> {
 
     private List<Evento> listaEventos;
-    private List<String> listaIds; // ← aquí guardaremos los IDs de Firestore
+    private List<String> listaIds;
+    private List<String> listaAutores;
 
-    public EventoAdapter(List<Evento> listaEventos, List<String> listaIds) {
+    public EventoAdapter(List<Evento> listaEventos, List<String> listaIds, List<String> listaAutores) {
         this.listaEventos = listaEventos;
         this.listaIds = listaIds;
+        this.listaAutores = listaAutores;
     }
 
     @NonNull
@@ -35,8 +37,10 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
         holder.tvFecha.setText("Fecha: " + evento.getFecha());
         holder.tvLugar.setText("Lugar: " + evento.getLugar());
 
-        // Añadimos el listener para abrir DetalleEventoActivity
-        String eventoId = listaIds.get(position); // ← ID real del documento
+        String autor = listaAutores.get(position);
+        holder.tvAutor.setText("Creado por: " + autor);
+
+        String eventoId = listaIds.get(position);
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), DetalleEventoActivity.class);
@@ -51,16 +55,14 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
     }
 
     public static class EventoViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitulo, tvFecha, tvLugar;
+        TextView tvTitulo, tvFecha, tvLugar, tvAutor;
 
         public EventoViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
+            tvAutor = itemView.findViewById(R.id.tvAutor);
             tvFecha = itemView.findViewById(R.id.tvFecha);
             tvLugar = itemView.findViewById(R.id.tvLugar);
         }
     }
 }
-
-
-
