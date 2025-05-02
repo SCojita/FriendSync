@@ -28,6 +28,7 @@ public class CalculadoraGastosActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculadora_gastos);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
         etTotalGasto = findViewById(R.id.etTotalGasto);
         btnRepartir = findViewById(R.id.btnRepartir);
@@ -91,6 +92,9 @@ public class CalculadoraGastosActivity extends AppCompatActivity {
         String resultado = String.format(Locale.getDefault(),
                 "Cada persona debe pagar: %.2f € (entre %d participantes)",
                 porPersona, asistentes.size());
+
+        tvResultadoGastos.setAlpha(0f);
+        tvResultadoGastos.animate().alpha(1f).setDuration(500).start();
 
         tvResultadoGastos.setText(resultado);
     }
