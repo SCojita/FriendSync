@@ -32,6 +32,7 @@ public class EditarEventoActivity extends AppCompatActivity {
 
     private EditText etTitulo, etFecha, etHora, etLugar, etDescripcion;
     private CheckBox checkboxPublico;
+    private CheckBox checkboxGastos;
     private Button btnGuardar;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -48,6 +49,7 @@ public class EditarEventoActivity extends AppCompatActivity {
         etLugar = findViewById(R.id.etLugar);
         etDescripcion = findViewById(R.id.etDescripcion);
         checkboxPublico = findViewById(R.id.checkboxPublico);
+        checkboxGastos = findViewById(R.id.checkboxGastos);
         btnGuardar = findViewById(R.id.btnGuardarEvento);
 
         db = FirebaseFirestore.getInstance();
@@ -106,6 +108,7 @@ public class EditarEventoActivity extends AppCompatActivity {
                         etLugar.setText(document.getString("lugar"));
                         etDescripcion.setText(document.getString("descripcion"));
                         checkboxPublico.setChecked(Boolean.TRUE.equals(document.getBoolean("publico")));
+                        checkboxGastos.setChecked(Boolean.TRUE.equals(document.getBoolean("gastos")));
                     }
                 });
     }
@@ -117,6 +120,7 @@ public class EditarEventoActivity extends AppCompatActivity {
         String lugar = etLugar.getText().toString().trim();
         String descripcion = etDescripcion.getText().toString().trim();
         boolean publico = checkboxPublico.isChecked();
+        boolean gastos = checkboxGastos.isChecked();
 
         if (titulo.isEmpty() || fecha.isEmpty() || hora.isEmpty() || lugar.isEmpty()) {
             Toast.makeText(this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show();
@@ -130,6 +134,7 @@ public class EditarEventoActivity extends AppCompatActivity {
         datosEvento.put("lugar", lugar);
         datosEvento.put("descripcion", descripcion);
         datosEvento.put("publico", publico);
+        datosEvento.put("gastos", gastos);
         datosEvento.put("uid_usuario", currentUser.getUid());
 
         DocumentReference ref = db.collection("eventos").document(eventoId);
