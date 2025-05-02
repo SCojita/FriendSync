@@ -29,7 +29,15 @@ public class AsistenteAdapter extends RecyclerView.Adapter<AsistenteAdapter.Asis
     @Override
     public void onBindViewHolder(@NonNull AsistenteViewHolder holder, int position) {
         Asistente asistente = listaAsistentes.get(position);
-        holder.textView.setText(asistente.getAlias() + " (" + asistente.getEmail() + ")");
+        String alias = asistente.getAlias();
+        String emailField = asistente.getEmail();
+        boolean esCreador = emailField.endsWith(" [creador]");
+        if (esCreador) {
+            String emailSolo = emailField.substring(0, emailField.length() - " [creador]".length());
+            holder.textView.setText(alias + " (" + emailSolo + ") [creador]");
+        } else {
+            holder.textView.setText(alias + " (" + emailField + ")");
+        }
     }
 
     @Override
@@ -46,4 +54,3 @@ public class AsistenteAdapter extends RecyclerView.Adapter<AsistenteAdapter.Asis
         }
     }
 }
-

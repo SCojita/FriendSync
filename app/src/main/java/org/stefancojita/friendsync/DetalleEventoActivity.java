@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -96,6 +95,10 @@ public class DetalleEventoActivity extends AppCompatActivity {
 
                     creatorUid = documentSnapshot.getString("uid_usuario");
                     asistentes = (List<String>) documentSnapshot.get("asistentes");
+                    if (asistentes == null) asistentes = new ArrayList<>();
+                    if (creatorUid != null && !asistentes.contains(creatorUid)) {
+                        asistentes.add(0, creatorUid);
+                    }
 
                     boolean gastosActivados = Boolean.TRUE.equals(documentSnapshot.getBoolean("gastos"));
                     if (gastosActivados) {
@@ -113,7 +116,7 @@ public class DetalleEventoActivity extends AppCompatActivity {
                         btnUnirse.setVisibility(View.GONE);
                         btnEliminarEvento.setVisibility(View.VISIBLE);
                         btnEditarEvento.setVisibility(View.VISIBLE);
-                    } else if (asistentes != null && asistentes.contains(currentUser.getUid())) {
+                    } else if (asistentes.contains(currentUser.getUid())) {
                         btnUnirse.setText("Salir del evento");
                         btnUnirse.setOnClickListener(v -> salirDelEvento());
                     } else {
@@ -134,7 +137,7 @@ public class DetalleEventoActivity extends AppCompatActivity {
                                 });
                     }
 
-                    if (asistentes != null && !asistentes.isEmpty()) {
+                    if (!asistentes.isEmpty()) {
                         tvSinAsistentes.setVisibility(View.GONE);
                         recyclerAsistentes.setVisibility(View.VISIBLE);
                         listaAsistentes.clear();
@@ -146,7 +149,16 @@ public class DetalleEventoActivity extends AppCompatActivity {
                                     .addOnSuccessListener(userDoc -> {
                                         String alias = userDoc.getString("alias");
                                         String email = userDoc.getString("email");
-                                        listaAsistentes.add(new Asistente(uid, alias, email));
+
+                                        if (alias == null) alias = "Usuario";
+                                        if (email == null) email = "correo@desconocido";
+
+                                        String correoFinal = email;
+                                        if (uid.equals(creatorUid)) {
+                                            correoFinal += " [creador]";
+                                        }
+
+                                        listaAsistentes.add(new Asistente(uid, alias, correoFinal));
                                         asistenteAdapter.notifyDataSetChanged();
                                     });
                         }

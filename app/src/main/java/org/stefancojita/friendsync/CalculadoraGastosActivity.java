@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,6 +23,7 @@ public class CalculadoraGastosActivity extends AppCompatActivity {
     private TextView tvResultadoGastos;
     private FirebaseFirestore db;
     private String eventoId;
+    private String creatorUid;
     private List<String> asistentes;
 
     @Override
@@ -47,7 +49,14 @@ public class CalculadoraGastosActivity extends AppCompatActivity {
                 .addOnSuccessListener(document -> {
                     if (document.exists()) {
                         asistentes = (List<String>) document.get("asistentes");
-                        if (asistentes == null || asistentes.isEmpty()) {
+                        creatorUid = document.getString("uid_usuario");
+
+                        if (asistentes == null) asistentes = new ArrayList<>();
+                        if (creatorUid != null && !asistentes.contains(creatorUid)) {
+                            asistentes.add(creatorUid);
+                        }
+
+                        if (asistentes.isEmpty()) {
                             Toast.makeText(this, "No hay asistentes en este evento", Toast.LENGTH_SHORT).show();
                             btnRepartir.setEnabled(false);
                         }
