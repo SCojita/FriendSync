@@ -20,6 +20,18 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".DemoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UneteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SobreNosotrosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".IntroduccionActivity"
+            android:exported="false" />
+        <activity
             android:name=".CalculadoraGastosActivity"
             android:exported="false" />
 
@@ -63,7 +75,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>

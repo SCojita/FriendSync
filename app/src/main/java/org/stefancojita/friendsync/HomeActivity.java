@@ -3,17 +3,11 @@ package org.stefancojita.friendsync;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,18 +29,23 @@ public class HomeActivity extends AppCompatActivity {
     private TextView tvSinNoticias;
     private LinearLayout botonesLayout;
 
+    private RecyclerView recyclerNovedades;
+    private ArticuloAdapter articuloAdapter;
+    private List<Articulo> listaArticulos;
+    private TextView tvSinNovedades;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         btnSettings = findViewById(R.id.btnSettings);
-        btnSettings.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, PreferencesActivity.class);
-            startActivity(intent);
-        });
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
         tvBienvenido = findViewById(R.id.tvBienvenido);
+        tvSinNoticias = findViewById(R.id.tvSinNoticias);
+        botonesLayout = findViewById(R.id.botonesLayout);
+
+        btnSettings.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, PreferencesActivity.class)));
 
         btnCerrarSesion.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
@@ -77,44 +76,40 @@ public class HomeActivity extends AppCompatActivity {
         recyclerNoticias.setAdapter(noticiasAdapter);
 
         recyclerNoticias.setAlpha(0f);
-        recyclerNoticias.animate()
-                .alpha(1f)
-                .setDuration(800)
-                .setStartDelay(300)
-                .start();
+        recyclerNoticias.animate().alpha(1f).setDuration(800).setStartDelay(300).start();
 
         cargarNoticiasDesdeFirestore();
 
-        tvSinNoticias = findViewById(R.id.tvSinNoticias);
-
-        botonesLayout = findViewById(R.id.botonesLayout);
-
         botonesLayout.setTranslationY(100f);
         botonesLayout.setAlpha(0f);
-
-        botonesLayout.animate()
-                .translationY(0f)
-                .alpha(1f)
-                .setDuration(800)
-                .setStartDelay(400)
-                .start();
+        botonesLayout.animate().translationY(0f).alpha(1f).setDuration(800).setStartDelay(400).start();
 
         MaterialButton btnCrearEvento = findViewById(R.id.btnCrearEvento);
         MaterialButton btnVerEventos = findViewById(R.id.btnVerEventos);
         MaterialButton btnMisEventos = findViewById(R.id.btnMisEventos);
 
-        btnCrearEvento.setOnClickListener(v -> {
-            startActivity(new Intent(this, CrearEventoActivity.class));
-        });
+        btnCrearEvento.setOnClickListener(v -> startActivity(new Intent(this, CrearEventoActivity.class)));
+        btnVerEventos.setOnClickListener(v -> startActivity(new Intent(this, ListaEventosActivity.class)));
+        btnMisEventos.setOnClickListener(v -> startActivity(new Intent(this, MisEventosActivity.class)));
+        
+        recyclerNovedades = findViewById(R.id.recyclerNovedades);
+        recyclerNovedades.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        btnVerEventos.setOnClickListener(v -> {
-            startActivity(new Intent(this, ListaEventosActivity.class));
-        });
+        listaArticulos = new ArrayList<>();
+        listaArticulos.add(new Articulo("Introducción a FriendSync", "Una visión general de la aplicación", 0));
+        listaArticulos.add(new Articulo("Sobre nosotros", "Descubre cómo nació FriendSync", 1));
+        listaArticulos.add(new Articulo("Forma parte del equipo", "¿Quieres unirte al proyecto?", 2));
+        listaArticulos.add(new Articulo("Demo lanzada", "Explora las funcionalidades clave", 3));
 
-        btnMisEventos.setOnClickListener(v -> {
-            startActivity(new Intent(this, MisEventosActivity.class));
-        });
+        articuloAdapter = new ArticuloAdapter(this, listaArticulos);
+        recyclerNovedades.setAdapter(articuloAdapter);
 
+        tvSinNovedades = findViewById(R.id.tvSinNovedades);
+        if (listaArticulos.isEmpty()) {
+            tvSinNovedades.setVisibility(View.VISIBLE);
+        } else {
+            tvSinNovedades.setVisibility(View.GONE);
+        }
     }
 
     private void cargarNoticiasDesdeFirestore() {
@@ -161,6 +156,4 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 });
     }
-
 }
-
