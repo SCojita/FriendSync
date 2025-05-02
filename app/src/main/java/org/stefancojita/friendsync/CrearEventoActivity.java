@@ -31,6 +31,7 @@ public class CrearEventoActivity extends AppCompatActivity {
 
     private EditText etTitulo, etFecha, etHora, etLugar, etDescripcion;
     private CheckBox checkboxPublico;
+    private CheckBox checkboxGastos;
     private Button btnGuardar;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -46,6 +47,7 @@ public class CrearEventoActivity extends AppCompatActivity {
         etLugar = findViewById(R.id.etLugar);
         etDescripcion = findViewById(R.id.etDescripcion);
         checkboxPublico = findViewById(R.id.checkboxPublico);
+        checkboxGastos = findViewById(R.id.checkboxGastos);
         btnGuardar = findViewById(R.id.btnGuardarEvento);
 
         db = FirebaseFirestore.getInstance();
@@ -108,6 +110,7 @@ public class CrearEventoActivity extends AppCompatActivity {
         datosEvento.put("lugar", lugar);
         datosEvento.put("descripcion", descripcion);
         datosEvento.put("publico", publico);
+        datosEvento.put("gastos", checkboxGastos.isChecked());
         datosEvento.put("uid_usuario", currentUser.getUid());
 
         db.collection("eventos")

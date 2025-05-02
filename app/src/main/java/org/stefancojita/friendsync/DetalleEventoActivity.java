@@ -25,7 +25,7 @@ import java.util.List;
 public class DetalleEventoActivity extends AppCompatActivity {
 
     private TextView tvTitulo, tvFecha, tvLugar, tvDescripcion, tvCreadorEvento, tvSinAsistentes;
-    private Button btnUnirse, btnEliminarEvento, btnEditarEvento;
+    private Button btnUnirse, btnEliminarEvento, btnEditarEvento, btnGastos;
     private RecyclerView recyclerAsistentes;
     private AsistenteAdapter asistenteAdapter;
     private List<Asistente> listaAsistentes;
@@ -52,6 +52,7 @@ public class DetalleEventoActivity extends AppCompatActivity {
         btnUnirse = findViewById(R.id.btnUnirse);
         btnEliminarEvento = findViewById(R.id.btnEliminarEvento);
         btnEditarEvento = findViewById(R.id.btnEditarEvento);
+        btnGastos = findViewById(R.id.btnGastos);
 
         recyclerAsistentes = findViewById(R.id.recyclerAsistentes);
         recyclerAsistentes.setLayoutManager(new LinearLayoutManager(this));
@@ -95,6 +96,18 @@ public class DetalleEventoActivity extends AppCompatActivity {
 
                     creatorUid = documentSnapshot.getString("uid_usuario");
                     asistentes = (List<String>) documentSnapshot.get("asistentes");
+
+                    boolean gastosActivados = Boolean.TRUE.equals(documentSnapshot.getBoolean("gastos"));
+                    if (gastosActivados) {
+                        btnGastos.setVisibility(View.VISIBLE);
+                        btnGastos.setOnClickListener(v -> {
+                            Intent intent = new Intent(this, CalculadoraGastosActivity.class);
+                            intent.putExtra("eventoId", eventoId);
+                            startActivity(intent);
+                        });
+                    } else {
+                        btnGastos.setVisibility(View.GONE);
+                    }
 
                     if (creatorUid != null && creatorUid.equals(currentUser.getUid())) {
                         btnUnirse.setVisibility(View.GONE);

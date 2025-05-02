@@ -90,6 +90,15 @@
             android:textColor="@android:color/white"
             android:layout_marginBottom="16dp" />
 
+        <Button
+            android:id="@+id/btnGastos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Calculadora de gastos"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            />
+
         <TextView
             android:id="@+id/tvListaAsistentes"
             android:text="Asistentes:"
