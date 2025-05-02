@@ -23,7 +23,7 @@ import java.util.List;
 
 public class DetalleEventoActivity extends AppCompatActivity {
 
-    private TextView tvTitulo, tvFecha, tvLugar, tvDescripcion, tvCreadorEvento, tvSinAsistentes;
+    private TextView tvTitulo, tvFecha, tvHora, tvLugar, tvDescripcion, tvCreadorEvento, tvSinAsistentes;
     private Button btnUnirse, btnEliminarEvento, btnEditarEvento, btnGastos;
     private RecyclerView recyclerAsistentes;
     private AsistenteAdapter asistenteAdapter;
@@ -43,6 +43,7 @@ public class DetalleEventoActivity extends AppCompatActivity {
 
         tvTitulo = findViewById(R.id.tvTitulo);
         tvFecha = findViewById(R.id.tvFecha);
+        tvHora = findViewById(R.id.tvHora);
         tvLugar = findViewById(R.id.tvLugar);
         tvDescripcion = findViewById(R.id.tvDescripcion);
         tvCreadorEvento = findViewById(R.id.tvCreadorEvento);
@@ -84,6 +85,7 @@ public class DetalleEventoActivity extends AppCompatActivity {
 
                     tvTitulo.setText(documentSnapshot.getString("titulo"));
                     tvFecha.setText("Fecha: " + documentSnapshot.getString("fecha"));
+                    tvHora.setText("Hora: " + documentSnapshot.getString("hora"));
                     tvLugar.setText("Lugar: " + documentSnapshot.getString("lugar"));
 
                     String descripcion = documentSnapshot.getString("descripcion");
