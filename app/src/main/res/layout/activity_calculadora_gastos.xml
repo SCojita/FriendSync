@@ -1,41 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="24dp"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorSurface">
 
-    <TextView
-        android:id="@+id/tvTituloGastos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Calculadora de gastos"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginBottom="16dp" />
-
-    <EditText
-        android:id="@+id/etTotalGasto"
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="24dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Gasto total (€)"
-        android:inputType="numberDecimal"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/btnRepartir"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Repartir"
-        android:layout_marginBottom="16dp" />
+        <TextView
+            android:id="@+id/tvTituloGastos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calculadora de gastos"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp" />
 
-    <TextView
-        android:id="@+id/tvResultadoGastos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="16sp"
-        android:textColor="@android:color/black" />
+        <TextView
+            android:id="@+id/tvContadorAsistentes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total de participantes:"
+            android:textSize="16sp"
+            android:textStyle="italic"
+            android:layout_marginBottom="16dp" />
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/etTotalGasto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Gasto total (€)"
+            android:inputType="numberDecimal"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnRepartir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Repartir"
+            android:layout_marginBottom="16dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="12dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/tvResultadoGastos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="24dp" />
+
+    </LinearLayout>
+</ScrollView>

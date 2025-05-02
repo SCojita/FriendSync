@@ -9,7 +9,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -20,10 +19,9 @@ public class CalculadoraGastosActivity extends AppCompatActivity {
 
     private EditText etTotalGasto;
     private Button btnRepartir;
-    private TextView tvResultadoGastos;
+    private TextView tvResultadoGastos, tvContadorAsistentes;
     private FirebaseFirestore db;
     private String eventoId;
-    private String creatorUid;
     private List<String> asistentes;
 
     @Override
@@ -34,6 +32,7 @@ public class CalculadoraGastosActivity extends AppCompatActivity {
         etTotalGasto = findViewById(R.id.etTotalGasto);
         btnRepartir = findViewById(R.id.btnRepartir);
         tvResultadoGastos = findViewById(R.id.tvResultadoGastos);
+        tvContadorAsistentes = findViewById(R.id.tvContadorAsistentes);
         db = FirebaseFirestore.getInstance();
 
         eventoId = getIntent().getStringExtra("eventoId");
@@ -49,12 +48,14 @@ public class CalculadoraGastosActivity extends AppCompatActivity {
                 .addOnSuccessListener(document -> {
                     if (document.exists()) {
                         asistentes = (List<String>) document.get("asistentes");
-                        creatorUid = document.getString("uid_usuario");
+                        String creatorUid = document.getString("uid_usuario");
 
                         if (asistentes == null) asistentes = new ArrayList<>();
                         if (creatorUid != null && !asistentes.contains(creatorUid)) {
-                            asistentes.add(creatorUid);
+                            asistentes.add(0, creatorUid);
                         }
+
+                        tvContadorAsistentes.setText("Total de participantes: " + asistentes.size());
 
                         if (asistentes.isEmpty()) {
                             Toast.makeText(this, "No hay asistentes en este evento", Toast.LENGTH_SHORT).show();
@@ -88,7 +89,7 @@ public class CalculadoraGastosActivity extends AppCompatActivity {
         double porPersona = total / asistentes.size();
 
         String resultado = String.format(Locale.getDefault(),
-                "Cada persona debe pagar: %.2f € (entre %d asistentes)",
+                "Cada persona debe pagar: %.2f € (entre %d participantes)",
                 porPersona, asistentes.size());
 
         tvResultadoGastos.setText(resultado);
