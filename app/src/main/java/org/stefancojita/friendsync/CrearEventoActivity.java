@@ -1,24 +1,28 @@
 package org.stefancojita.friendsync;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -26,36 +30,35 @@ import java.util.Map;
 public class CrearEventoActivity extends AppCompatActivity {
 
     private EditText etTitulo, etFecha, etHora, etLugar, etDescripcion;
-    private Button btnGuardarEvento;
+    private CheckBox checkboxPublico;
+    private Button btnGuardar;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
-    private MaterialCheckBox checkboxPublico;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crear_evento);
 
         etTitulo = findViewById(R.id.etTitulo);
-
         etFecha = findViewById(R.id.etFecha);
-        etFecha.setOnClickListener(v -> mostrarDatePicker());
-
         etHora = findViewById(R.id.etHora);
-        etHora.setOnClickListener(v -> mostrarSelectorHora());
-
         etLugar = findViewById(R.id.etLugar);
         etDescripcion = findViewById(R.id.etDescripcion);
-        btnGuardarEvento = findViewById(R.id.btnGuardarEvento);
         checkboxPublico = findViewById(R.id.checkboxPublico);
+        btnGuardar = findViewById(R.id.btnGuardarEvento);
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        btnGuardarEvento.setOnClickListener(v -> guardarEvento());
+        etFecha.setOnClickListener(v -> mostrarSelectorFecha());
+
+        etHora.setOnClickListener(v -> mostrarSelectorHora());
+
+        btnGuardar.setOnClickListener(v -> guardarEvento());
     }
 
-    private void mostrarDatePicker() {
+    private void mostrarSelectorFecha() {
         final Calendar calendario = Calendar.getInstance();
         int anio = calendario.get(Calendar.YEAR);
         int mes = calendario.get(Calendar.MONTH);
@@ -63,11 +66,11 @@ public class CrearEventoActivity extends AppCompatActivity {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 (view, year, monthOfYear, dayOfMonth) -> {
-                    String fechaSeleccionada = String.format("%02d/%02d/%04d", dayOfMonth, monthOfYear + 1, year);
+                    String fechaSeleccionada = String.format(Locale.getDefault(), "%02d/%02d/%04d",
+                            dayOfMonth, monthOfYear + 1, year);
                     etFecha.setText(fechaSeleccionada);
                 }, anio, mes, dia);
 
-        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
         datePickerDialog.show();
     }
 
@@ -77,11 +80,10 @@ public class CrearEventoActivity extends AppCompatActivity {
         int minuto = calendar.get(Calendar.MINUTE);
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                (view, hourOfDay, minute) -> {
-                    String horaFormateada = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+                (TimePicker view, int hourOfDay, int minute1) -> {
+                    String horaFormateada = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute1);
                     etHora.setText(horaFormateada);
-                },
-                hora, minuto, true);
+                }, hora, minuto, true);
 
         timePickerDialog.show();
     }
@@ -92,43 +94,59 @@ public class CrearEventoActivity extends AppCompatActivity {
         String hora = etHora.getText().toString().trim();
         String lugar = etLugar.getText().toString().trim();
         String descripcion = etDescripcion.getText().toString().trim();
-        boolean esPublico = checkboxPublico.isChecked();
+        boolean publico = checkboxPublico.isChecked();
 
-        if (titulo.isEmpty()) {
-            etTitulo.setError("El título es obligatorio");
-            etTitulo.requestFocus();
+        if (titulo.isEmpty() || fecha.isEmpty() || hora.isEmpty() || lugar.isEmpty()) {
+            Toast.makeText(this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (fecha.isEmpty()) {
-            etFecha.setError("La fecha es obligatoria");
-            etFecha.requestFocus();
-            return;
-        }
-
-        if (lugar.isEmpty()) {
-            etLugar.setError("El lugar es obligatorio");
-            etLugar.requestFocus();
-            return;
-        }
-
-        Map<String, Object> evento = new HashMap<>();
-        evento.put("titulo", titulo);
-        evento.put("fecha", fecha);
-        evento.put("hora", hora);
-        evento.put("lugar", lugar);
-        evento.put("descripcion", descripcion);
-        evento.put("publico", esPublico);
-        evento.put("uid_usuario", currentUser.getUid());
+        Map<String, Object> datosEvento = new HashMap<>();
+        datosEvento.put("titulo", titulo);
+        datosEvento.put("fecha", fecha);
+        datosEvento.put("hora", hora);
+        datosEvento.put("lugar", lugar);
+        datosEvento.put("descripcion", descripcion);
+        datosEvento.put("publico", publico);
+        datosEvento.put("uid_usuario", currentUser.getUid());
 
         db.collection("eventos")
-                .add(evento)
+                .add(datosEvento)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Evento guardado con éxito", Toast.LENGTH_SHORT).show();
+                    programarNotificacion(documentReference.getId(), titulo, fecha, hora);
+                    Toast.makeText(this, "Evento creado correctamente", Toast.LENGTH_SHORT).show();
                     finish();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al guardar el evento", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Error al crear evento: " + e.getMessage(), Toast.LENGTH_LONG).show()
                 );
+    }
+
+    private void programarNotificacion(String eventoId, String tituloEvento, String fecha, String hora) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        try {
+            Date fechaHora = sdf.parse(fecha + " " + hora);
+            if (fechaHora == null) return;
+
+            long tiempoEnMillis = fechaHora.getTime();
+            if (tiempoEnMillis < System.currentTimeMillis()) return;
+
+            Intent intent = new Intent(this, NotificacionReceiver.class);
+            intent.putExtra("tituloEvento", tituloEvento);
+            intent.putExtra("eventoId", eventoId);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    this,
+                    eventoId.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tiempoEnMillis, pendingIntent);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

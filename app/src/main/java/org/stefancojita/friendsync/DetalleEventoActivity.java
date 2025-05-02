@@ -1,31 +1,22 @@
 package org.stefancojita.friendsync;
 
-import android.Manifest;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -33,78 +24,71 @@ import java.util.List;
 
 public class DetalleEventoActivity extends AppCompatActivity {
 
-    private TextView tvTitulo, tvFecha, tvHora, tvLugar, tvDescripcion;
-    private Button btnUnirse;
-    private FirebaseFirestore db;
-    private FirebaseUser currentUser;
-    private String eventoId;
-    private List<String> asistentes = new ArrayList<>();
-    private String creatorUid;
+    private TextView tvTitulo, tvFecha, tvLugar, tvDescripcion, tvCreadorEvento, tvSinAsistentes;
+    private Button btnUnirse, btnEliminarEvento, btnEditarEvento;
     private RecyclerView recyclerAsistentes;
     private AsistenteAdapter asistenteAdapter;
-    private List<Asistente> listaAsistentes = new ArrayList<>();
-    private Button btnEliminarEvento;
-    private Button btnEditarEvento;
-    private TextView tvCreadorEvento;
-    private TextView tvSinAsistentes;
+    private List<Asistente> listaAsistentes;
 
+    private FirebaseFirestore db;
+    private FirebaseUser currentUser;
+
+    private String eventoId;
+    private String creatorUid;
+    private List<String> asistentes;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_evento);
 
-        tvCreadorEvento = findViewById(R.id.tvCreadorEvento);
         tvTitulo = findViewById(R.id.tvTitulo);
         tvFecha = findViewById(R.id.tvFecha);
-        tvHora = findViewById(R.id.tvHora);
         tvLugar = findViewById(R.id.tvLugar);
         tvDescripcion = findViewById(R.id.tvDescripcion);
+        tvCreadorEvento = findViewById(R.id.tvCreadorEvento);
+        tvSinAsistentes = findViewById(R.id.tvSinAsistentes);
+
         btnUnirse = findViewById(R.id.btnUnirse);
+        btnEliminarEvento = findViewById(R.id.btnEliminarEvento);
+        btnEditarEvento = findViewById(R.id.btnEditarEvento);
+
         recyclerAsistentes = findViewById(R.id.recyclerAsistentes);
         recyclerAsistentes.setLayoutManager(new LinearLayoutManager(this));
+        listaAsistentes = new ArrayList<>();
         asistenteAdapter = new AsistenteAdapter(listaAsistentes);
         recyclerAsistentes.setAdapter(asistenteAdapter);
-        btnEliminarEvento = findViewById(R.id.btnEliminarEvento);
-        btnEliminarEvento.setOnClickListener(v -> eliminarEvento());
-        btnEditarEvento = findViewById(R.id.btnEditarEvento);
-        btnEditarEvento.setOnClickListener(v -> {
-            Intent intent = new Intent(this, EditarEventoActivity.class);
-            intent.putExtra("eventoId", eventoId);
-            startActivity(intent);
-        });
-        tvSinAsistentes = findViewById(R.id.tvSinAsistentes);
 
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         eventoId = getIntent().getStringExtra("eventoId");
 
-        if (eventoId != null) {
-            cargarDetallesEvento();
-        }
+        cargarDetallesEvento();
 
-        btnUnirse.setOnClickListener(v -> unirseAlEvento());
+        btnEliminarEvento.setOnClickListener(v -> eliminarEvento());
 
-        crearCanalNotificaciones();
+        btnEditarEvento.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EditarEventoActivity.class);
+            intent.putExtra("eventoId", eventoId);
+            startActivity(intent);
+        });
     }
 
     private void cargarDetallesEvento() {
         btnEliminarEvento.setVisibility(View.GONE);
         btnEditarEvento.setVisibility(View.GONE);
-
         db.collection("eventos").document(eventoId)
                 .addSnapshotListener((documentSnapshot, error) -> {
                     if (error != null || documentSnapshot == null || !documentSnapshot.exists()) return;
 
                     tvTitulo.setText(documentSnapshot.getString("titulo"));
                     tvFecha.setText("Fecha: " + documentSnapshot.getString("fecha"));
-                    tvHora.setText("Hora: " + documentSnapshot.getString("hora"));
                     tvLugar.setText("Lugar: " + documentSnapshot.getString("lugar"));
 
                     String descripcion = documentSnapshot.getString("descripcion");
                     if (descripcion == null || descripcion.trim().isEmpty()) {
-                        tvDescripcion.setText("Descripción: No hay descripción.");
+                        tvDescripcion.setText("Descripción: No hay descripción");
                     } else {
                         tvDescripcion.setText("Descripción: " + descripcion);
                     }
@@ -117,11 +101,9 @@ public class DetalleEventoActivity extends AppCompatActivity {
                         btnEliminarEvento.setVisibility(View.VISIBLE);
                         btnEditarEvento.setVisibility(View.VISIBLE);
                     } else if (asistentes != null && asistentes.contains(currentUser.getUid())) {
-                        btnUnirse.setVisibility(View.VISIBLE);
                         btnUnirse.setText("Salir del evento");
                         btnUnirse.setOnClickListener(v -> salirDelEvento());
                     } else {
-                        btnUnirse.setVisibility(View.VISIBLE);
                         btnUnirse.setText("Unirse al evento");
                         btnUnirse.setOnClickListener(v -> unirseAlEvento());
                     }
@@ -162,7 +144,31 @@ public class DetalleEventoActivity extends AppCompatActivity {
                 });
     }
 
+    private void eliminarEvento() {
+        db.collection("eventos").document(eventoId)
+                .delete()
+                .addOnSuccessListener(unused -> {
+                    cancelarNotificacion(eventoId);
+                    Toast.makeText(this, "Evento eliminado", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error al eliminar: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                );
+    }
 
+    private void cancelarNotificacion(String eventoId) {
+        Intent intent = new Intent(this, NotificacionReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                eventoId.hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+    }
 
     private void unirseAlEvento() {
         db.collection("eventos").document(eventoId)
@@ -182,9 +188,6 @@ public class DetalleEventoActivity extends AppCompatActivity {
                                         Toast.makeText(this, "Te has unido al evento", Toast.LENGTH_SHORT).show();
                                         btnUnirse.setEnabled(false);
                                         btnUnirse.setText("Ya estás unido");
-
-                                        enviarNotificacionUnido(tvTitulo.getText().toString());
-
                                         cargarDetallesEvento();
                                     });
                         } else {
@@ -192,25 +195,6 @@ public class DetalleEventoActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }
-
-    private void eliminarEvento() {
-        new AlertDialog.Builder(this)
-                .setTitle("Eliminar evento")
-                .setMessage("¿Estás seguro de que quieres eliminar este evento?")
-                .setPositiveButton("Sí", (dialog, which) -> {
-                    db.collection("eventos").document(eventoId)
-                            .delete()
-                            .addOnSuccessListener(unused -> {
-                                Toast.makeText(this, "Evento eliminado", Toast.LENGTH_SHORT).show();
-                                finish();
-                            })
-                            .addOnFailureListener(e ->
-                                    Toast.makeText(this, "Error al eliminar el evento", Toast.LENGTH_SHORT).show()
-                            );
-                })
-                .setNegativeButton("Cancelar", null)
-                .show();
     }
 
     private void salirDelEvento() {
@@ -233,33 +217,4 @@ public class DetalleEventoActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
-    private void crearCanalNotificaciones() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence nombre = "CanalEventos";
-            String descripcion = "Canal para notificaciones de eventos";
-            int importancia = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel canal = new NotificationChannel("canal_eventos", nombre, importancia);
-            canal.setDescription(descripcion);
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(canal);
-        }
-    }
-
-    private void enviarNotificacionUnido(String tituloEvento) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "canal_eventos")
-                .setSmallIcon(R.drawable.ic_event) // Icono de la notificación
-                .setContentTitle("¡Te has unido a un evento!")
-                .setContentText("Evento: " + tituloEvento)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            notificationManager.notify(1, builder.build());
-        }
-    }
-
 }
