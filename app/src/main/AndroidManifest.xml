@@ -20,6 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ArticuloErroresActivity"
+            android:exported="false" />
+        <activity
             android:name=".DemoActivity"
             android:exported="false" />
         <activity

@@ -100,6 +100,7 @@ public class HomeActivity extends AppCompatActivity {
         listaArticulos.add(new Articulo("Sobre nosotros", "Descubre cómo nació FriendSync", 1));
         listaArticulos.add(new Articulo("Forma parte del equipo", "¿Quieres unirte al proyecto?", 2));
         listaArticulos.add(new Articulo("Demo lanzada", "Explora las funcionalidades clave", 3));
+        listaArticulos.add(new Articulo("Errores comunes", "Posibles errores y soluciones", 4));
 
         articuloAdapter = new ArticuloAdapter(this, listaArticulos);
         recyclerNovedades.setAdapter(articuloAdapter);

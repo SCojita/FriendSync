@@ -51,6 +51,9 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Articu
                 case 3:
                     intent = new Intent(context, DemoActivity.class);
                     break;
+                case 4:
+                    intent = new Intent(context, ArticuloErroresActivity.class);
+                    break;
             }
             if (intent != null) {
                 context.startActivity(intent);
