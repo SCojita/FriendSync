@@ -180,7 +180,6 @@ public class HomeActivity extends AppCompatActivity {
 
                                             listaNoticias.add(new Noticia(aliasCreador, tituloEvento, fechaLugar, doc.getId())); // Agregamos la noticia a la lista.
                                             noticiasAdapter.notifyDataSetChanged(); // Notificamos al adaptador que los datos han cambiado.
-
                                             textoSinNoticias.setVisibility(View.GONE); // Ocultamos el mensaje de "sin noticias".
                                         }
                                     });
