@@ -1,6 +1,7 @@
 package org.stefancojita.friendsync;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,7 +29,6 @@ public class HomeActivity extends AppCompatActivity {
     private NoticiasAdapter noticiasAdapter;
     private TextView tvSinNoticias;
     private LinearLayout botonesLayout;
-
     private RecyclerView recyclerNovedades;
     private ArticuloAdapter articuloAdapter;
     private List<Articulo> listaArticulos;
@@ -110,6 +110,16 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             tvSinNovedades.setVisibility(View.GONE);
         }
+
+        TextView tvSugerencias = findViewById(R.id.tvSugerencias);
+        tvSugerencias.setPaintFlags(tvSugerencias.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        tvSugerencias.setOnClickListener(v -> {
+            String url = "https://docs.google.com/forms/d/e/1FAIpQLSdWfQZjKgqY6JbevQ9R_1HpIy3mB7SAhnl3XnoQwcfPu-8x1w/viewform?usp=preview";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(android.net.Uri.parse(url));
+            startActivity(intent);
+        });
+
     }
 
     private void cargarNoticiasDesdeFirestore() {
