@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tvAliasCreador"
+            android:id="@+id/txtAliasCreador"
             android:text="Usuario ha creado este evento:"
             android:textStyle="bold"
             android:textSize="14sp"
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/tvNombreEvento"
+            android:id="@+id/txtNombreEvento"
             android:text="Nombre del evento"
             android:textSize="14sp"
             android:layout_marginTop="4dp"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/tvFechaLugar"
+            android:id="@+id/txtFechaLugar"
             android:text="Fecha y lugar"
             android:textSize="12sp"
             android:textColor="@android:color/darker_gray"

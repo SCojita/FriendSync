@@ -42,9 +42,9 @@ public class HomeActivity extends AppCompatActivity {
 
         btnSettings = findViewById(R.id.btnSettings);
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
-        tvBienvenido = findViewById(R.id.tvBienvenido);
+        tvBienvenido = findViewById(R.id.txtBienvenido);
         tvSinNoticias = findViewById(R.id.tvSinNoticias);
-        botonesLayout = findViewById(R.id.botonesLayout);
+        botonesLayout = findViewById(R.id.botones);
 
         btnSettings.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, PreferencesActivity.class)));
 
@@ -69,7 +69,7 @@ public class HomeActivity extends AppCompatActivity {
                     });
         }
 
-        RecyclerView recyclerNoticias = findViewById(R.id.recyclerNoticias);
+        RecyclerView recyclerNoticias = findViewById(R.id.rcyNoticias);
         recyclerNoticias.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         listaNoticias = new ArrayList<>();
@@ -93,7 +93,7 @@ public class HomeActivity extends AppCompatActivity {
         btnVerEventos.setOnClickListener(v -> startActivity(new Intent(this, ListaEventosActivity.class)));
         btnMisEventos.setOnClickListener(v -> startActivity(new Intent(this, MisEventosActivity.class)));
         
-        recyclerNovedades = findViewById(R.id.recyclerNovedades);
+        recyclerNovedades = findViewById(R.id.rcyNovedades);
         recyclerNovedades.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         listaArticulos = new ArrayList<>();
@@ -114,7 +114,7 @@ public class HomeActivity extends AppCompatActivity {
             tvSinNovedades.setVisibility(View.GONE);
         }
 
-        TextView tvSugerencias = findViewById(R.id.tvSugerencias);
+        TextView tvSugerencias = findViewById(R.id.txtSugerencias);
         tvSugerencias.setPaintFlags(tvSugerencias.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         tvSugerencias.setOnClickListener(v -> {
             String url = "https://docs.google.com/forms/d/e/1FAIpQLSdWfQZjKgqY6JbevQ9R_1HpIy3mB7SAhnl3XnoQwcfPu-8x1w/viewform?usp=preview";

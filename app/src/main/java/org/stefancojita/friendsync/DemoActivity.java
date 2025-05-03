@@ -13,7 +13,7 @@ public class DemoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo);
 
-        TextView tvDemo = findViewById(R.id.tvTextoDemo);
+        TextView tvDemo = findViewById(R.id.txtTextoDemo);
         tvDemo.setText("¡La demo de FriendSync ya está disponible! Esta versión incluye las funciones principales para organizar tus eventos: registro, creación, unión a eventos, edición, " +
                 "gestión de gastos, alias, notificaciones automáticas y más.\n\n" +
                 "Durante este periodo de pruebas podrás explorar la aplicación, probar la interfaz, descubrir las noticias, gestionar tus propios eventos e incluso repartir los gastos " +

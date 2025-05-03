@@ -43,13 +43,13 @@ public class EditarEventoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crear_evento);
 
-        etTitulo = findViewById(R.id.etTitulo);
-        etFecha = findViewById(R.id.etFecha);
-        etHora = findViewById(R.id.etHora);
-        etLugar = findViewById(R.id.etLugar);
-        etDescripcion = findViewById(R.id.etDescripcion);
-        checkboxPublico = findViewById(R.id.checkboxPublico);
-        checkboxGastos = findViewById(R.id.checkboxGastos);
+        etTitulo = findViewById(R.id.edtTitulo);
+        etFecha = findViewById(R.id.edtFecha);
+        etHora = findViewById(R.id.edtHora);
+        etLugar = findViewById(R.id.edtLugar);
+        etDescripcion = findViewById(R.id.edtDescripcion);
+        checkboxPublico = findViewById(R.id.ckboxPublico);
+        checkboxGastos = findViewById(R.id.ckbokGastos);
         btnGuardar = findViewById(R.id.btnGuardarEvento);
 
         db = FirebaseFirestore.getInstance();

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tvTitulo"
+            android:id="@+id/txtTitulo"
             android:text="Nombre del evento"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/tvCreadorEvento"
+            android:id="@+id/txtCreadorEvento"
             android:text="Creado por:"
             android:textSize="14sp"
             android:textStyle="italic"
@@ -31,28 +31,28 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/tvFecha"
+            android:id="@+id/txtFecha"
             android:text="Fecha: 01/01/2025"
             android:layout_marginBottom="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/tvHora"
+            android:id="@+id/txtHora"
             android:text="Hora: 18:00"
             android:layout_marginBottom="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/tvLugar"
+            android:id="@+id/txtLugar"
             android:text="Lugar: Biblioteca"
             android:layout_marginBottom="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/tvDescripcion"
+            android:id="@+id/txtDescripcion"
             android:text="Descripcion larga del evento..."
             android:layout_marginBottom="12dp"
             android:layout_width="wrap_content"
@@ -101,7 +101,7 @@
             />
 
         <TextView
-            android:id="@+id/tvListaAsistentes"
+            android:id="@+id/txtListaAsistentes"
             android:text="Asistentes:"
             android:textStyle="bold"
             android:textSize="16sp"
@@ -110,7 +110,7 @@
             android:layout_height="wrap_content" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerAsistentes"
+            android:id="@+id/rcyAsistentes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp" />

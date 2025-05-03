@@ -13,7 +13,7 @@ public class IntroduccionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_introduccion);
 
-        TextView tvIntro = findViewById(R.id.tvTextoIntroduccion);
+        TextView tvIntro = findViewById(R.id.txtTextoIntroduccion);
         tvIntro.setText(
                 "FriendSync es una plataforma moderna pensada para conectar amigos y grupos sociales a través de la organización de eventos. " +
                         "Nuestra aplicación nació con una idea muy simple: facilitar el proceso de planificar, comunicar y disfrutar de actividades compartidas entre personas.\n\n" +

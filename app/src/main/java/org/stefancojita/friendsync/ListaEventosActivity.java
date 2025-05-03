@@ -2,20 +2,17 @@ package org.stefancojita.friendsync;
 
 import android.os.Bundle;
 import androidx.appcompat.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -35,7 +32,7 @@ public class ListaEventosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_eventos);
 
-        recyclerEventos = findViewById(R.id.recyclerEventos);
+        recyclerEventos = findViewById(R.id.rcyEventos);
         recyclerEventos.setLayoutManager(new LinearLayoutManager(this));
 
         listaEventos = new ArrayList<>();
@@ -44,7 +41,7 @@ public class ListaEventosActivity extends AppCompatActivity {
         adapter = new EventoAdapter(listaEventos, listaIds, listaAutores);
         recyclerEventos.setAdapter(adapter);
 
-        searchView = findViewById(R.id.searchView);
+        searchView = findViewById(R.id.srchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

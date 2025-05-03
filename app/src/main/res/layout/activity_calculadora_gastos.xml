@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tvTituloGastos"
+            android:id="@+id/txtTituloGastos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Calculadora de gastos"
@@ -22,7 +22,7 @@
             android:layout_marginBottom="24dp" />
 
         <TextView
-            android:id="@+id/tvContadorAsistentes"
+            android:id="@+id/txtContadorAsistentes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Total de participantes:"
@@ -31,7 +31,7 @@
             android:layout_marginBottom="16dp" />
 
         <EditText
-            android:id="@+id/etTotalGasto"
+            android:id="@+id/edtTotalGasto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Gasto total (€)"
@@ -52,7 +52,7 @@
             android:background="@android:color/darker_gray" />
 
         <TextView
-            android:id="@+id/tvResultadoGastos"
+            android:id="@+id/txtResultadoGastos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""

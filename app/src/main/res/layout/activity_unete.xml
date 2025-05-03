@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvTituloUnete"
+            android:id="@+id/txtTituloUnete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Forma parte del equipo FriendSync"
@@ -21,7 +21,7 @@
             android:layout_marginBottom="16dp" />
 
         <TextView
-            android:id="@+id/tvTextoUnete"
+            android:id="@+id/txtTextoUnete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Texto unete"

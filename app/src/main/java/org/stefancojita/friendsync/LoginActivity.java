@@ -8,12 +8,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -32,12 +28,12 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        emailEditText = findViewById(R.id.emailEditText);
-        passwordEditText = findViewById(R.id.passwordEditText);
-        loginButton = findViewById(R.id.loginButton);
-        tvOlvidasteContrasena = findViewById(R.id.tvOlvidasteContrasena);
+        emailEditText = findViewById(R.id.emlEditText);
+        passwordEditText = findViewById(R.id.pwdEditText);
+        loginButton = findViewById(R.id.btnLogin);
+        tvOlvidasteContrasena = findViewById(R.id.txtOlvidasteContrasenya);
         tvOlvidasteContrasena.setOnClickListener(v -> mostrarDialogoRecuperarContrasena());
-        goToRegisterButton = (TextView) findViewById(R.id.goToRegisterButton);
+        goToRegisterButton = (TextView) findViewById(R.id.txtRegistraButton);
 
         loginButton.setOnClickListener(v -> loginUser());
         goToRegisterButton.setOnClickListener(v -> {

@@ -17,7 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +24,7 @@
         android:hint="Correo electrónico">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/emailEditText"
+            android:id="@+id/emlEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"/>
@@ -38,14 +37,14 @@
         android:hint="Contraseña">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/passwordEditText"
+            android:id="@+id/pwdEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginButton"
+        android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Entrar"
@@ -54,7 +53,7 @@
         android:textColor="@android:color/white"/>
 
     <TextView
-        android:id="@+id/tvOlvidasteContrasena"
+        android:id="@+id/txtOlvidasteContrasenya"
         android:text="¿Has olvidado tu contraseña?"
         android:textColor="@color/colorPrimary"
         android:textSize="14sp"
@@ -64,7 +63,7 @@
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/goToRegisterButton"
+        android:id="@+id/txtRegistraButton"
         android:text="¿No tienes cuenta? Regístrate"
         android:textColor="@color/colorPrimary"
         android:textSize="14sp"

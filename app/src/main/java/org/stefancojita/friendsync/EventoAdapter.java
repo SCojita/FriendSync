@@ -68,10 +68,10 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
 
         public EventoViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTitulo = itemView.findViewById(R.id.tvTitulo);
-            tvAutor = itemView.findViewById(R.id.tvAutor);
-            tvFecha = itemView.findViewById(R.id.tvFecha);
-            tvLugar = itemView.findViewById(R.id.tvLugar);
+            tvTitulo = itemView.findViewById(R.id.txtTitulo);
+            tvAutor = itemView.findViewById(R.id.txtAutor);
+            tvFecha = itemView.findViewById(R.id.txtFecha);
+            tvLugar = itemView.findViewById(R.id.txtLugar);
         }
     }
 }

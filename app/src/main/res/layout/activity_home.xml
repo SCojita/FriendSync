@@ -7,7 +7,7 @@
     android:background="@color/colorSurface">
 
     <LinearLayout
-        android:id="@+id/headerLayout"
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -30,7 +30,7 @@
             android:layout_height="0dp" />
 
         <TextView
-            android:id="@+id/tvBienvenido"
+            android:id="@+id/txtBienvenido"
             android:text="¡Bienvenido, usuario!"
             android:textColor="@android:color/white"
             android:textSize="14sp"
@@ -48,7 +48,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tvNoticiasTitulo"
+        android:id="@+id/txtNoticiasTitulo"
         android:text="Noticias"
         android:textStyle="bold"
         android:textSize="18sp"
@@ -59,7 +59,7 @@
         android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerNoticias"
+        android:id="@+id/rcyNoticias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -78,7 +78,7 @@
         android:layout_height="wrap_content" />
 
     <LinearLayout
-        android:id="@+id/botonesLayout"
+        android:id="@+id/botones"
         android:orientation="vertical"
         android:gravity="center"
         android:layout_marginTop="24dp"
@@ -117,7 +117,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tvNovedadesTitulo"
+        android:id="@+id/txtNovedadesTitulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Descubre nuestras novedades"
@@ -128,7 +128,7 @@
         android:layout_marginTop="16dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerNovedades"
+        android:id="@+id/rcyNovedades"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -147,7 +147,7 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/tvSugerencias"
+        android:id="@+id/txtSugerencias"
         android:text="Envíanos tus sugerencias"
         android:textSize="16sp"
         android:textStyle="italic"
@@ -163,7 +163,7 @@
         android:layout_weight="1" />
 
     <TextView
-        android:id="@+id/tvCopyright"
+        android:id="@+id/txtCopyright"
         android:text="Copyright © 2025 FriendSync"
         android:textSize="12sp"
         android:textColor="@android:color/darker_gray"

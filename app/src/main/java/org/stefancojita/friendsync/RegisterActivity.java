@@ -7,11 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,10 +30,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        emailEditText = findViewById(R.id.registerEmailEditText);
-        aliasEditText = findViewById(R.id.registerAliasEditText);
-        passwordEditText = findViewById(R.id.registerPasswordEditText);
-        registerButton = findViewById(R.id.registerButton);
+        emailEditText = findViewById(R.id.rgterEmailEditText);
+        aliasEditText = findViewById(R.id.rgterAliasEditText);
+        passwordEditText = findViewById(R.id.rgterPasswordEditText);
+        registerButton = findViewById(R.id.rgterButton);
 
         registerButton.setOnClickListener(v -> registerUser());
     }

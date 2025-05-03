@@ -13,7 +13,7 @@ public class SobreNosotrosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sobre_nosotros);
 
-        TextView tvSobreNosotros = findViewById(R.id.tvTextoSobreNosotros);
+        TextView tvSobreNosotros = findViewById(R.id.txtTextoSobreNosotros);
         tvSobreNosotros.setText("FriendSync nació como un proyecto de final de grado, impulsado por la pasión por la tecnología y la necesidad de resolver un problema real: " +
                 "hacer más fácil quedar con amigos y organizar eventos de forma digital. Lo que empezó siendo una pequeña idea entre estudiantes fue creciendo poco a poco, " +
                 "sumando funcionalidades, ilusión y apoyo por parte de compañeros, profesores y usuarios que creyeron en la utilidad de nuestra herramienta.\n\n" +

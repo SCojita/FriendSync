@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvTituloSobreNosotros"
+            android:id="@+id/txtTituloSobreNosotros"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sobre nosotros"
@@ -21,7 +21,7 @@
             android:layout_marginBottom="16dp" />
 
         <TextView
-            android:id="@+id/tvTextoSobreNosotros"
+            android:id="@+id/txtTextoSobreNosotros"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Texto sobre nosotros"

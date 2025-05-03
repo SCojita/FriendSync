@@ -51,9 +51,9 @@ public class NoticiasAdapter extends RecyclerView.Adapter<NoticiasAdapter.Notici
 
         public NoticiaViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvAliasCreador = itemView.findViewById(R.id.tvAliasCreador);
-            tvNombreEvento = itemView.findViewById(R.id.tvNombreEvento);
-            tvFechaLugar = itemView.findViewById(R.id.tvFechaLugar);
+            tvAliasCreador = itemView.findViewById(R.id.txtAliasCreador);
+            tvNombreEvento = itemView.findViewById(R.id.txtNombreEvento);
+            tvFechaLugar = itemView.findViewById(R.id.txtFechaLugar);
         }
     }
 }

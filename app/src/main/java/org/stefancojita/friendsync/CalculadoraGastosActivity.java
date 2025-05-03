@@ -30,10 +30,10 @@ public class CalculadoraGastosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calculadora_gastos);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
-        etTotalGasto = findViewById(R.id.etTotalGasto);
+        etTotalGasto = findViewById(R.id.edtTotalGasto);
         btnRepartir = findViewById(R.id.btnRepartir);
-        tvResultadoGastos = findViewById(R.id.tvResultadoGastos);
-        tvContadorAsistentes = findViewById(R.id.tvContadorAsistentes);
+        tvResultadoGastos = findViewById(R.id.txtResultadoGastos);
+        tvContadorAsistentes = findViewById(R.id.txtContadorAsistentes);
         db = FirebaseFirestore.getInstance();
 
         eventoId = getIntent().getStringExtra("eventoId");

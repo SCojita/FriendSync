@@ -13,7 +13,7 @@ public class UneteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_unete);
 
-        TextView tvUnete = findViewById(R.id.tvTextoUnete);
+        TextView tvUnete = findViewById(R.id.txtTextoUnete);
         tvUnete.setText("FriendSync no solo es una aplicación, es una idea viva. Creemos en el poder de la colaboración y en construir soluciones desde la comunidad para la comunidad. " +
                 "¿Te gusta la tecnología? ¿Te apasiona el diseño, la programación o simplemente tienes buenas ideas? Entonces tal vez este sea tu sitio.\n\n" +
                 "Buscamos personas con ilusión, que quieran crecer profesionalmente en un entorno joven, motivado y comprometido con una visión: mejorar cómo las personas se organizan " +

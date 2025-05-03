@@ -11,8 +11,8 @@ public class ArticuloErroresActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_articulo_errores);
 
-        TextView tvTitulo = findViewById(R.id.tvTituloErrores);
-        TextView tvContenido = findViewById(R.id.tvContenidoErrores);
+        TextView tvTitulo = findViewById(R.id.txtTituloErrores);
+        TextView tvContenido = findViewById(R.id.txtContenidoErrores);
 
         tvTitulo.setText("Posibles errores que puedes tener en FriendSync y cómo solucionarlos");
 

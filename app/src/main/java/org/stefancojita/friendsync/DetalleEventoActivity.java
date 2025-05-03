@@ -41,12 +41,12 @@ public class DetalleEventoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_evento);
 
-        tvTitulo = findViewById(R.id.tvTitulo);
-        tvFecha = findViewById(R.id.tvFecha);
-        tvHora = findViewById(R.id.tvHora);
-        tvLugar = findViewById(R.id.tvLugar);
-        tvDescripcion = findViewById(R.id.tvDescripcion);
-        tvCreadorEvento = findViewById(R.id.tvCreadorEvento);
+        tvTitulo = findViewById(R.id.txtTitulo);
+        tvFecha = findViewById(R.id.txtFecha);
+        tvHora = findViewById(R.id.txtHora);
+        tvLugar = findViewById(R.id.txtLugar);
+        tvDescripcion = findViewById(R.id.txtDescripcion);
+        tvCreadorEvento = findViewById(R.id.txtCreadorEvento);
         tvSinAsistentes = findViewById(R.id.tvSinAsistentes);
 
         btnUnirse = findViewById(R.id.btnUnirse);
@@ -54,7 +54,7 @@ public class DetalleEventoActivity extends AppCompatActivity {
         btnEditarEvento = findViewById(R.id.btnEditarEvento);
         btnGastos = findViewById(R.id.btnGastos);
 
-        recyclerAsistentes = findViewById(R.id.recyclerAsistentes);
+        recyclerAsistentes = findViewById(R.id.rcyAsistentes);
         recyclerAsistentes.setLayoutManager(new LinearLayoutManager(this));
         listaAsistentes = new ArrayList<>();
         asistenteAdapter = new AsistenteAdapter(listaAsistentes);

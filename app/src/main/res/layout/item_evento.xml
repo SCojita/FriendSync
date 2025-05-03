@@ -16,7 +16,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tvTitulo"
+            android:id="@+id/txtTitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nombre del evento"
@@ -25,7 +25,7 @@
             android:textColor="@color/colorPrimary" />
 
         <TextView
-            android:id="@+id/tvAutor"
+            android:id="@+id/txtAutor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Creado por: Stefan"
@@ -35,7 +35,7 @@
             android:layout_marginTop="2dp" />
 
         <TextView
-            android:id="@+id/tvFecha"
+            android:id="@+id/txtFecha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -43,7 +43,7 @@
             android:textColor="@android:color/black" />
 
         <TextView
-            android:id="@+id/tvLugar"
+            android:id="@+id/txtLugar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"

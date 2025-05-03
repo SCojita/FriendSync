@@ -2,7 +2,6 @@ package org.stefancojita.friendsync;
 
 import android.os.Bundle;
 import androidx.appcompat.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,7 +31,7 @@ public class MisEventosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_eventos);
 
-        recyclerMisEventos = findViewById(R.id.recyclerEventos);
+        recyclerMisEventos = findViewById(R.id.rcyEventos);
         recyclerMisEventos.setLayoutManager(new LinearLayoutManager(this));
 
         listaMisEventos = new ArrayList<>();
@@ -41,7 +40,7 @@ public class MisEventosActivity extends AppCompatActivity {
         adapter = new EventoAdapter(listaMisEventos, listaIds, listaAutores);
         recyclerMisEventos.setAdapter(adapter);
 
-        searchView = findViewById(R.id.searchView);
+        searchView = findViewById(R.id.srchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
