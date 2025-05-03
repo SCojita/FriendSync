@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -102,6 +103,7 @@ public class HomeActivity extends AppCompatActivity {
         listaArticulos.add(new Articulo("Demo lanzada", "Explora las funcionalidades clave", 3));
         listaArticulos.add(new Articulo("Errores comunes", "Posibles errores y soluciones", 4));
 
+        Collections.reverse(listaArticulos);
         articuloAdapter = new ArticuloAdapter(this, listaArticulos);
         recyclerNovedades.setAdapter(articuloAdapter);
 
