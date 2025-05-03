@@ -17,6 +17,7 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
     private List<String> listaIds;
     private List<String> listaAutores;
 
+    // Constructor del adaptador.
     public EventoAdapter(List<Evento> listaEventos, List<String> listaIds, List<String> listaAutores) {
         this.listaEventos = listaEventos;
         this.listaIds = listaIds;
@@ -35,11 +36,16 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
     // Sobreescribimos el método onBindViewHolder para asignar los datos a las vistas.
     @Override
     public void onBindViewHolder(@NonNull EventoViewHolder holder, int position) {
+        // Prevención de error por listas desincronizadas
+        if (position >= listaEventos.size() || position >= listaIds.size() || position >= listaAutores.size()) {
+            return;
+        }
+
         Evento evento = listaEventos.get(position); // Obtenemos el evento correspondiente a la posición.
         holder.textTitulo.setText(evento.getTitulo()); // Asignamos el título del evento.
 
         String fecha = evento.getFecha(); // Obtenemos la fecha del evento.
-        String hora = evento.getHora(); // Obtenemos la hora del evento.
+        String hora = evento.getHora();   // Obtenemos la hora del evento.
 
         // Formateamos la fecha y hora para mostrarla en el TextView con ternarios.
         String fechaHora = (hora != null && !hora.isEmpty())
@@ -81,4 +87,5 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
             textLugar = itemView.findViewById(R.id.txtLugar);
         }
     }
+
 }

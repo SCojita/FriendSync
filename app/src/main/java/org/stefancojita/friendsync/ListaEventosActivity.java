@@ -67,14 +67,23 @@ public class ListaEventosActivity extends AppCompatActivity {
     private void cargarEventosDesdeFirestore() {
         // Usamos un listener para escuchar los cambios en la colección "eventos".
         db.collection("eventos")
-                // ordenamos los eventos por fecha.
                 .addSnapshotListener((queryDocumentSnapshots, error) -> {
-                    listaEventos.clear(); // Limpiamos la lista de eventos.
-                    listaIds.clear(); // Limpiamos la lista de IDs.
-                    listaAutores.clear(); // Limpiamos la lista de autores.
+                    // Limpiamos las listas principales y notificamos al adaptador.
+                    listaEventos.clear();
+                    listaIds.clear();
+                    listaAutores.clear();
+                    adapter.notifyDataSetChanged();
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()); // Formato de fecha.
                     Date fechaActual = new Date(); // Obtenemos la fecha actual.
+
+                    // Declaramos listas temporales para almacenar los datos mientras se resuelven los alias.
+                    List<Evento> eventosTemporales = new ArrayList<>();
+                    List<String> idsTemporales = new ArrayList<>();
+                    List<String> uidsTemporales = new ArrayList<>();
+
+                    // Verificamos que la respuesta no sea nula.
+                    if (queryDocumentSnapshots == null) return;
 
                     // Recorremos los documentos obtenidos de Firestore.
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
@@ -88,39 +97,68 @@ public class ListaEventosActivity extends AppCompatActivity {
 
                             // Comprobamos si la fecha del evento es válida y si el evento es público.
                             if (fechaEvento != null && !fechaEvento.before(fechaActual) && Boolean.TRUE.equals(esPublico)) {
-                                listaEventos.add(evento); // Agregamos el evento a la lista.
-                                listaIds.add(doc.getId()); // Agregamos el ID del evento a la lista.
-
-                                // Obtenemos el alias del creador del evento.
-                                db.collection("users").document(uidCreador)
-                                        .get()
-                                        // Obtenemos el documento del usuario.
-                                        .addOnSuccessListener(userDoc -> {
-                                            String alias = userDoc.getString("alias"); // Obtenemos el alias del usuario.
-
-                                            // Si el alias es nulo, asignamos un valor por defecto.
-                                            if (alias == null) alias = "Usuario";
-                                            listaAutores.add(alias); // Agregamos el alias a la lista de autores.
-                                            adapter.notifyDataSetChanged(); // Notificamos al adaptador que los datos han cambiado.
-                                        });
+                                eventosTemporales.add(evento); // Agregamos el evento a la lista temporal.
+                                idsTemporales.add(doc.getId()); // Agregamos el ID del evento a la lista temporal.
+                                uidsTemporales.add(uidCreador); // Agregamos el UID del creador a la lista temporal.
                             }
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
                     }
+
+                    // Si no hay eventos que mostrar, salimos.
+                    if (uidsTemporales.isEmpty()) return;
+
+                    // Preparamos una lista de autores temporales del mismo tamaño.
+                    List<String> autoresTemporales = new ArrayList<>();
+                    for (int i = 0; i < uidsTemporales.size(); i++) {
+                        autoresTemporales.add(""); // Inicializamos con cadenas vacías.
+                    }
+
+                    // Contador para saber cuándo hemos terminado de cargar todos los alias.
+                    final int total = uidsTemporales.size();
+                    final int[] contador = {0};
+
+                    // Por cada UID de creador, buscamos su alias y lo colocamos en la posición correcta.
+                    for (int i = 0; i < total; i++) {
+                        final int index = i;
+                        db.collection("users").document(uidsTemporales.get(i))
+                                .get()
+                                .addOnSuccessListener(userDoc -> {
+                                    String alias = userDoc.getString("alias"); // Obtenemos el alias del usuario.
+                                    if (alias == null) alias = "Usuario"; // Si es nulo, lo reemplazamos.
+                                    autoresTemporales.set(index, alias); // Colocamos en su posición correcta.
+                                    contador[0]++;
+
+                                    // Cuando hayamos completado todos los alias, los asignamos a las listas principales.
+                                    if (contador[0] == total) {
+                                        listaEventos.addAll(eventosTemporales);
+                                        listaIds.addAll(idsTemporales);
+                                        listaAutores.addAll(autoresTemporales);
+                                        adapter.notifyDataSetChanged(); // Notificamos al adaptador.
+                                    }
+                                });
+                    }
                 });
     }
 
+    // Creamos un método para filtrar los eventos según el texto ingresado en el SearchView.
     private void filtrarEventos(String texto) {
+        // Declaramos las listas filtradas.
         List<Evento> listaFiltrada = new ArrayList<>();
         List<String> listaIdsFiltrada = new ArrayList<>();
         List<String> listaAutoresFiltrada = new ArrayList<>();
 
-        for (int i = 0; i < listaEventos.size(); i++) {
+        // Nos aseguramos de que todas las listas tengan el mismo tamaño antes de filtrar.
+        int total = Math.min(Math.min(listaEventos.size(), listaIds.size()), listaAutores.size());
+
+        // Recorremos con seguridad todas las listas.
+        for (int i = 0; i < total; i++) {
             Evento evento = listaEventos.get(i);
             String id = listaIds.get(i);
             String autor = listaAutores.get(i);
 
+            // Verificamos si el título o el lugar del evento contienen el texto ingresado.
             if (evento.getTitulo().toLowerCase().contains(texto.toLowerCase()) ||
                     evento.getLugar().toLowerCase().contains(texto.toLowerCase())) {
                 listaFiltrada.add(evento);
@@ -129,7 +167,9 @@ public class ListaEventosActivity extends AppCompatActivity {
             }
         }
 
+        // Creamos un nuevo adaptador y lo asignamos al RecyclerView.
         adapter = new EventoAdapter(listaFiltrada, listaIdsFiltrada, listaAutoresFiltrada);
         recyclerEventos.setAdapter(adapter);
     }
+
 }

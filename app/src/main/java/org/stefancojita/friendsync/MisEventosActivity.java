@@ -66,41 +66,68 @@ public class MisEventosActivity extends AppCompatActivity {
 
     // Creamos un método para cargar los eventos del usuario actual.
     private void cargarMisEventos() {
-        // Obtenemos la colección de eventos y escuchamos los cambios en tiempo real.
+        // Escuchamos los cambios en la colección "eventos".
         db.collection("eventos")
-                // Filtramos los eventos por el uid del usuario actual.
                 .addSnapshotListener((querySnapshot, error) -> {
-                    listaMisEventos.clear(); // Limpiamos la lista de eventos.
-                    listaIds.clear(); // Limpiamos la lista de IDs.
-                    listaAutores.clear(); // Limpiamos la lista de autores.
+                    // Limpiamos listas y notificamos para evitar errores por reciclaje.
+                    listaMisEventos.clear();
+                    listaIds.clear();
+                    listaAutores.clear();
+                    adapter.notifyDataSetChanged();
 
-                    // Recorremos los documentos de la colección en la bd.
+                    // Creamos listas temporales para datos sincronizados.
+                    List<Evento> eventosTemporales = new ArrayList<>();
+                    List<String> idsTemporales = new ArrayList<>();
+                    List<String> uidsTemporales = new ArrayList<>();
+
+                    if (querySnapshot == null) return;
+
+                    // Recorremos todos los eventos.
                     for (QueryDocumentSnapshot doc : querySnapshot) {
-                        Evento evento = doc.toObject(Evento.class); // Convertimos el documento a un objeto Evento.
-                        String id = doc.getId(); // Obtenemos el ID del documento.
-                        String creador = doc.getString("uid_usuario"); // Obtenemos el UID del creador del evento.
-                        List<String> asistentes = (List<String>) doc.get("asistentes"); // Obtenemos la lista de asistentes.
+                        Evento evento = doc.toObject(Evento.class);
+                        String id = doc.getId();
+                        String creador = doc.getString("uid_usuario");
+                        List<String> asistentes = (List<String>) doc.get("asistentes");
 
-                        boolean soyCreador = creador != null && creador.equals(usuarioActual.getUid()); // Verificamos si el usuario actual es el creador del evento.
-                        boolean estoyUnido = asistentes != null && asistentes.contains(usuarioActual.getUid()); // Verificamos si el usuario actual está en la lista de asistentes.
+                        boolean soyCreador = creador != null && creador.equals(usuarioActual.getUid());
+                        boolean estoyUnido = asistentes != null && asistentes.contains(usuarioActual.getUid());
 
-                        // Si el usuario es el creador o está unido al evento, lo añadimos a la lista.
+                        // Si es creador o está unido, guardamos datos temporalmente.
                         if (soyCreador || estoyUnido) {
-                            listaMisEventos.add(evento); // Añadimos el evento a la lista.
-                            listaIds.add(id); // Añadimos el ID a la lista.
-
-                            // Obtenemos el alias del creador del evento.
-                            db.collection("users").document(creador)
-                                    .get()
-                                    // Obtenemos el documento del usuario.
-                                    .addOnSuccessListener(userDoc -> {
-                                        String alias = userDoc.getString("alias"); // Obtenemos el alias del usuario.
-                                        // Si el alias es nulo, lo asignamos como "Usuario".
-                                        if (alias == null) alias = "Usuario";
-                                        listaAutores.add(alias); // Añadimos el alias a la lista.
-                                        adapter.notifyDataSetChanged(); // Notificamos al adaptador que los datos han cambiado.
-                                    });
+                            eventosTemporales.add(evento);
+                            idsTemporales.add(id);
+                            uidsTemporales.add(creador);
                         }
+                    }
+
+                    // Si no hay eventos válidos, salimos.
+                    if (uidsTemporales.isEmpty()) return;
+
+                    // Inicializamos autores temporales y contador.
+                    List<String> autoresTemporales = new ArrayList<>();
+                    for (int i = 0; i < uidsTemporales.size(); i++) autoresTemporales.add("");
+                    final int total = uidsTemporales.size();
+                    final int[] contador = {0};
+
+                    // Buscamos alias de cada UID y los colocamos en orden.
+                    for (int i = 0; i < total; i++) {
+                        final int index = i;
+                        db.collection("users").document(uidsTemporales.get(i))
+                                .get()
+                                .addOnSuccessListener(userDoc -> {
+                                    String alias = userDoc.getString("alias");
+                                    if (alias == null) alias = "Usuario";
+                                    autoresTemporales.set(index, alias);
+                                    contador[0]++;
+
+                                    // Cuando terminamos, pasamos datos reales al adaptador.
+                                    if (contador[0] == total) {
+                                        listaMisEventos.addAll(eventosTemporales);
+                                        listaIds.addAll(idsTemporales);
+                                        listaAutores.addAll(autoresTemporales);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                });
                     }
                 });
     }
@@ -112,22 +139,27 @@ public class MisEventosActivity extends AppCompatActivity {
         List<String> listaIdsFiltrada = new ArrayList<>();
         List<String> listaAutoresFiltrada = new ArrayList<>();
 
-        // Creamos un bucle para recorrer la lista de eventos.
-        for (int i = 0; i < listaMisEventos.size(); i++) {
-            Evento evento = listaMisEventos.get(i); // Obtenemos el evento de la lista.
-            String id = listaIds.get(i); // Obtenemos el ID del evento.
-            String autor = listaAutores.get(i); // Obtenemos el autor del evento.
+        // Nos aseguramos de que todas las listas tengan el mismo tamaño antes de filtrar.
+        int total = Math.min(Math.min(listaMisEventos.size(), listaIds.size()), listaAutores.size());
+
+        // Recorremos con seguridad todas las listas.
+        for (int i = 0; i < total; i++) {
+            Evento evento = listaMisEventos.get(i);
+            String id = listaIds.get(i);
+            String autor = listaAutores.get(i);
 
             // Verificamos si el título o el lugar del evento contienen el texto ingresado.
             if (evento.getTitulo().toLowerCase().contains(texto.toLowerCase()) ||
                     evento.getLugar().toLowerCase().contains(texto.toLowerCase())) {
-                listaFiltrada.add(evento); // Añadimos el evento a la lista filtrada.
-                listaIdsFiltrada.add(id); // Añadimos el ID a la lista filtrada.
-                listaAutoresFiltrada.add(autor); // Añadimos el autor a la lista filtrada.
+                listaFiltrada.add(evento);
+                listaIdsFiltrada.add(id);
+                listaAutoresFiltrada.add(autor);
             }
         }
 
-        adapter = new EventoAdapter(listaFiltrada, listaIdsFiltrada, listaAutoresFiltrada); // Creamos un nuevo adaptador con la lista filtrada.
-        recyclerMisEventos.setAdapter(adapter); // Asignamos el nuevo adaptador al RecyclerView.
+        // Creamos un nuevo adaptador y lo asignamos al RecyclerView.
+        adapter = new EventoAdapter(listaFiltrada, listaIdsFiltrada, listaAutoresFiltrada);
+        recyclerMisEventos.setAdapter(adapter);
     }
+
 }
