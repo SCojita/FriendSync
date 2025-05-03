@@ -20,14 +20,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class PreferencesActivity extends AppCompatActivity {
 
+    // Declaración de variables.
     // private SwitchCompat switchTema;
-    private MaterialButton btnCambiarContrasena, btnEliminarCuenta;
+    private MaterialButton btnCambiarContrasenya, btnEliminarCuenta;
     private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        // Configuración de la barra de estado y navegación para que no se superpongan con el contenido.
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -55,11 +57,15 @@ public class PreferencesActivity extends AppCompatActivity {
 //                    isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 //        });
 
-        btnCambiarContrasena = findViewById(R.id.btnCambiarContrasena);
-        btnCambiarContrasena.setOnClickListener(v -> {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        btnCambiarContrasenya = findViewById(R.id.btnCambiarContrasena);
+
+        // Establecemos el listener para el botón de cambiar contraseña.
+        btnCambiarContrasenya.setOnClickListener(v -> {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser(); // Obtenemos el usuario actual de FirebaseAuth
+            // Si el usuario no es nulo, enviamos un correo para restablecer la contraseña.
             if (user != null) {
-                FirebaseAuth.getInstance().sendPasswordResetEmail(user.getEmail())
+                FirebaseAuth.getInstance().sendPasswordResetEmail(user.getEmail()) // Enviamos el correo para restablecer la contraseña
+                        // Si el correo se envía correctamente, mostramos un mensaje de éxito.
                         .addOnSuccessListener(unused ->
                                 Toast.makeText(this, "Se ha enviado un correo para cambiar la contraseña.", Toast.LENGTH_LONG).show())
                         .addOnFailureListener(e ->
@@ -68,7 +74,9 @@ public class PreferencesActivity extends AppCompatActivity {
         });
 
         btnEliminarCuenta = findViewById(R.id.btnEliminarCuenta);
+        // Establecemos el listener para el botón de eliminar cuenta.
         btnEliminarCuenta.setOnClickListener(v -> {
+            // Mostramos un diálogo de confirmación antes de eliminar la cuenta.
             new AlertDialog.Builder(this)
                     .setTitle("Eliminar cuenta")
                     .setMessage("¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.")
@@ -79,17 +87,19 @@ public class PreferencesActivity extends AppCompatActivity {
 
     }
 
+    // Creamos un método para eliminar la cuenta del usuario.
     private void eliminarCuenta() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser(); // Obtenemos el usuario actual de FirebaseAuth
+        FirebaseFirestore db = FirebaseFirestore.getInstance(); // Obtenemos la instancia de Firestore
 
-        if (user == null) return;
+        if (usuario == null) return; // Si el usuario es nulo, no hacemos nada.
 
-        String uid = user.getUid();
+        String uid = usuario.getUid(); // Obtenemos el UID del usuario actual
 
         db.collection("eventos")
                 .whereEqualTo("uid_usuario", uid)
                 .get()
+                // Obtenemos todos los eventos del usuario actual.
                 .addOnSuccessListener(querySnapshot -> {
                     for (DocumentSnapshot doc : querySnapshot) {
                         doc.getReference().delete();
@@ -98,8 +108,8 @@ public class PreferencesActivity extends AppCompatActivity {
                     db.collection("users").document(uid)
                             .delete()
                             .addOnSuccessListener(unused -> {
-                                // 3. Eliminar la cuenta del usuario en FirebaseAuth
-                                user.delete()
+                                // Si se eliminan los datos del usuario, eliminamos la cuenta de FirebaseAuth.
+                                usuario.delete()
                                         .addOnSuccessListener(unused2 -> {
                                             Toast.makeText(this, "Cuenta eliminada correctamente", Toast.LENGTH_SHORT).show();
                                             FirebaseAuth.getInstance().signOut();

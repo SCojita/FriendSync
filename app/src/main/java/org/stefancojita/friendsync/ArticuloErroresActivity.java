@@ -11,11 +11,13 @@ public class ArticuloErroresActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_articulo_errores);
 
-        TextView tvTitulo = findViewById(R.id.txtTituloErrores);
-        TextView tvContenido = findViewById(R.id.txtContenidoErrores);
+        // Definimos los TextViews para el título y el contenido.
+        TextView txtTitulo = findViewById(R.id.txtTituloErrores);
+        TextView txtContenido = findViewById(R.id.txtContenidoErrores);
 
-        tvTitulo.setText("Posibles errores que puedes tener en FriendSync y cómo solucionarlos");
+        txtTitulo.setText("Posibles errores que puedes tener en FriendSync y cómo solucionarlos"); // Título de la actividad.
 
+        // Creamos un String largo que contiene la información sobre los errores y sus soluciones.
         String textoLargo = "En FriendSync nos esforzamos por ofrecerte la mejor experiencia, pero sabemos que pueden surgir algunos problemas. Aquí te explicamos cómo solucionarlos:\n\n" +
                 "1. No recibes notificaciones:\n" +
                 "   - Asegúrate de haber otorgado el permiso para mostrar notificaciones.\n" +
@@ -33,6 +35,6 @@ public class ArticuloErroresActivity extends AppCompatActivity {
                 "Si el problema persiste, contáctanos a través del formulario de sugerencias en la página principal.\n\n" +
                 "Gracias por utilizar FriendSync.";
 
-        tvContenido.setText(textoLargo);
+        txtContenido.setText(textoLargo); // Establecemos el contenido del TextView con el texto largo.
     }
 }

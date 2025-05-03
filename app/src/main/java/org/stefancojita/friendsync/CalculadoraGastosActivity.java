@@ -17,85 +17,104 @@ import java.util.Locale;
 
 public class CalculadoraGastosActivity extends AppCompatActivity {
 
-    private EditText etTotalGasto;
+    // Declaración de variables.
+    private EditText editTotalGasto;
     private Button btnRepartir;
-    private TextView tvResultadoGastos, tvContadorAsistentes;
+    private TextView textResultadoGastos, textContadorAsistentes;
     private FirebaseFirestore db;
-    private String eventoId;
+    private String evento_id;
     private List<String> asistentes;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculadora_gastos);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out); // Creamos una animación de transición.
 
-        etTotalGasto = findViewById(R.id.edtTotalGasto);
+        // Inicialización de variables.
+        editTotalGasto = findViewById(R.id.edtTotalGasto);
         btnRepartir = findViewById(R.id.btnRepartir);
-        tvResultadoGastos = findViewById(R.id.txtResultadoGastos);
-        tvContadorAsistentes = findViewById(R.id.txtContadorAsistentes);
-        db = FirebaseFirestore.getInstance();
+        textResultadoGastos = findViewById(R.id.txtResultadoGastos);
+        textContadorAsistentes = findViewById(R.id.txtContadorAsistentes);
 
-        eventoId = getIntent().getStringExtra("eventoId");
+        db = FirebaseFirestore.getInstance(); // Inicializamos la base de datos de Firebase.
 
-        cargarAsistentes();
+        evento_id = getIntent().getStringExtra("eventoId"); // Obtenemos el ID del evento de la actividad anterior.
 
-        btnRepartir.setOnClickListener(v -> calcularReparto());
+        cargarAsistentes(); // Cargamos la lista de asistentes.
+
+        btnRepartir.setOnClickListener(v -> calcularReparto()); // Configuramos el botón para calcular el reparto de gastos.
     }
 
+    // Creamos un método para cargar la lista de asistentes desde Firestore.
     private void cargarAsistentes() {
-        db.collection("eventos").document(eventoId)
-                .get()
+        // Comprobamos que el ID del evento no sea nulo.
+        db.collection("eventos").document(evento_id)
+                .get()// Obtenemos el documento del evento.
+                // Añadimos un listener para comprobar si se ha obtenido el documento correctamente.
                 .addOnSuccessListener(document -> {
+                    // Comprobamos si el documento existe.
                     if (document.exists()) {
-                        asistentes = (List<String>) document.get("asistentes");
-                        String creatorUid = document.getString("uid_usuario");
+                        asistentes = (List<String>) document.get("asistentes"); // Obtenemos la lista de asistentes.
+                        String creatorUid = document.getString("uid_usuario"); // Obtenemos el UID del creador del evento.
 
+                        // Comprobamos si la lista de asistentes es nula o vacía.
                         if (asistentes == null) asistentes = new ArrayList<>();
+
+                        // Comprobamos si el UID del creador no es nulo y no está en la lista de asistentes.
                         if (creatorUid != null && !asistentes.contains(creatorUid)) {
-                            asistentes.add(0, creatorUid);
+                            asistentes.add(0, creatorUid); // Añadimos el UID del creador al principio de la lista.
                         }
 
-                        tvContadorAsistentes.setText("Total de participantes: " + asistentes.size());
+                        textContadorAsistentes.setText("Total de participantes: " + asistentes.size()); // Mostramos el número de asistentes.
 
+                        // Comprobamos si la lista de asistentes está vacía.
                         if (asistentes.isEmpty()) {
-                            Toast.makeText(this, "No hay asistentes en este evento", Toast.LENGTH_SHORT).show();
-                            btnRepartir.setEnabled(false);
+                            Toast.makeText(this, "No hay asistentes en este evento", Toast.LENGTH_SHORT).show(); // Mostramos un mensaje de error.
+                            btnRepartir.setEnabled(false); // Desactivamos el botón de repartir gastos.
                         }
                     }
                 });
     }
 
+    // Creamos un método para calcular el reparto de gastos.
     private void calcularReparto() {
-        String input = etTotalGasto.getText().toString().trim();
+        String input = editTotalGasto.getText().toString().trim(); // Obtenemos el texto del EditText y lo eliminamos de espacios en blanco.
 
+        // Comprobamos si el EditText está vacío.
         if (input.isEmpty()) {
-            Toast.makeText(this, "Introduce un gasto total", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Introduce un gasto total", Toast.LENGTH_SHORT).show(); // Mostramos un mensaje de error.
             return;
         }
 
+        // Comprobamos si la lista de asistentes es nula o vacía.
         if (asistentes == null || asistentes.isEmpty()) {
-            Toast.makeText(this, "No hay asistentes para repartir", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No hay asistentes para repartir", Toast.LENGTH_SHORT).show(); // Mostramos un mensaje de error.
             return;
         }
 
-        double total;
+        double total; // Declaramos la variable que contiene el total.
+
+        // Bloque 'try-catch'.
+        // Intentará convertir el texto del EditText a un número decimal.
+        // Si no se puede convertir, mostrará un mensaje de error.
         try {
-            total = Double.parseDouble(input);
+            total = Double.parseDouble(input); // Aquí convertimos el texto a un número decimal.
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Introduce un número válido", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        double porPersona = total / asistentes.size();
+        double porPersona = total / asistentes.size(); // Calculamos el gasto por persona en una nueva variable.
 
+        // Comprobamos si el gasto por persona es menor que 0.
         String resultado = String.format(Locale.getDefault(),
                 "Cada persona debe pagar: %.2f € (entre %d participantes)",
                 porPersona, asistentes.size());
 
-        tvResultadoGastos.setAlpha(0f);
-        tvResultadoGastos.animate().alpha(1f).setDuration(500).start();
+        textResultadoGastos.setAlpha(0f); // Hacemos que el TextView sea invisible.
+        textResultadoGastos.animate().alpha(1f).setDuration(500).start(); // Animamos el TextView para que aparezca.
 
-        tvResultadoGastos.setText(resultado);
+        textResultadoGastos.setText(resultado); // Mostramos el resultado en el TextView.
     }
 }

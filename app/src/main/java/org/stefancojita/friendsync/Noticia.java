@@ -2,11 +2,13 @@ package org.stefancojita.friendsync;
 
 public class Noticia {
 
+    // Declaración de atributos.
     private String autor;
     private String titulo;
     private String detalle;
     private String eventoId;
 
+    // Declaración de constructor.
     public Noticia(String autor, String titulo, String detalle, String eventoId) {
         this.autor = autor;
         this.titulo = titulo;
@@ -14,7 +16,7 @@ public class Noticia {
         this.eventoId = eventoId;
     }
 
-    // Getters.
+    // Métodos de acceso (getters).
     public String getEventoId() {
         return eventoId;
     }

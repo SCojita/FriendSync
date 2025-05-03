@@ -24,14 +24,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth autenticacion = FirebaseAuth.getInstance(); // Inicializamos Firebase Authentication
 
-        if (mAuth.getCurrentUser() != null) {
+
+        // Si hay un usuario autenticado, lo redirigimos a la pantalla de inicio.
+        // Si no, lo redirigimos a la pantalla de inicio de sesión.
+        if (autenticacion.getCurrentUser() != null) {
             startActivity(new Intent(this, HomeActivity.class));
         } else {
             startActivity(new Intent(this, LoginActivity.class));
         }
 
+        // Si la versión de Android es 12 o superior, solicitamos el permiso de notificaciones
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -42,10 +46,13 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    // Sobreescribimos el método onRequestPermissionsResult para manejar la respuesta del usuario
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Si el usuario concede el permiso de notificaciones, mostramos un mensaje
         if (requestCode == 1) {
+            // Si el usuario concede el permiso de notificaciones, mostramos un mensaje
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permiso de notificaciones concedido", Toast.LENGTH_SHORT).show();
             } else {

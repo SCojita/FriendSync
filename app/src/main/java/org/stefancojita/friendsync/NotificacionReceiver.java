@@ -17,13 +17,15 @@ public class NotificacionReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        // Declaramos las variables del titulo y el id del evento.
         String tituloEvento = intent.getStringExtra("tituloEvento");
         String eventoId = intent.getStringExtra("eventoId");
 
         Intent i = new Intent(context, DetalleEventoActivity.class);
         i.putExtra("eventoId", eventoId);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Nos aseguramos de que la actividad se abra en una nueva tarea y borre la anterior.
 
+        // Creamos un PendingIntent para abrir la actividad DetalleEventoActivity al hacer clic en la notificación.
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
                 0,
@@ -31,32 +33,37 @@ public class NotificacionReceiver extends BroadcastReceiver {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE); // Obtenemos el NotificationManager.
 
-        String canalId = "canal_eventos_v2";
+        String canalId = "canal_eventos_v2"; // ID del canal de notificación.
 
+        // Creamos el canal de notificación si la versión de Android es Oreo o superior.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Verificamos si el canal ya existe.
             NotificationChannel canal = new NotificationChannel(
                     canalId,
                     "Notificaciones de eventos",
-                    NotificationManager.IMPORTANCE_HIGH
+                    NotificationManager.IMPORTANCE_HIGH // Importancia alta para mostrar la notificación como un pop-up.
             );
-            canal.setDescription("Recordatorios de eventos programados");
+            canal.setDescription("Recordatorios de eventos programados"); // Descripción del canal.
 
+            // Configuramos el sonido de la notificación.
             canal.setSound(
                     RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    // Configuramos los atributos de audio.
                     new AudioAttributes.Builder()
                             .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                             .build()
             );
 
-            canal.enableLights(true);
-            canal.enableVibration(true);
+            canal.enableLights(true); // Habilitamos las luces LED.
+            canal.enableVibration(true); // Habilitamos la vibración.
 
-            notificationManager.createNotificationChannel(canal);
+            notificationManager.createNotificationChannel(canal); // Creamos el canal de notificación.
         }
 
+        // Creamos la notificación.
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, canalId)
                 .setSmallIcon(R.drawable.ic_notificacion)
                 .setContentTitle("¡Ya es la hora del evento!")
@@ -65,6 +72,6 @@ public class NotificacionReceiver extends BroadcastReceiver {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
-        notificationManager.notify(eventoId.hashCode(), builder.build());
+        notificationManager.notify(eventoId.hashCode(), builder.build()); // Mostramos la notificación con un ID único basado en el hash del eventoId.
     }
 }

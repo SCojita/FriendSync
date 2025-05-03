@@ -29,81 +29,93 @@ import java.util.Map;
 
 public class CrearEventoActivity extends AppCompatActivity {
 
-    private EditText etTitulo, etFecha, etHora, etLugar, etDescripcion;
+    private EditText editTitulo, editFecha, editHora, editLugar, editDescripcion;
     private CheckBox checkboxPublico;
     private CheckBox checkboxGastos;
     private Button btnGuardar;
     private FirebaseFirestore db;
-    private FirebaseUser currentUser;
+    private FirebaseUser usuarioActual;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crear_evento);
 
-        etTitulo = findViewById(R.id.edtTitulo);
-        etFecha = findViewById(R.id.edtFecha);
-        etHora = findViewById(R.id.edtHora);
-        etLugar = findViewById(R.id.edtLugar);
-        etDescripcion = findViewById(R.id.edtDescripcion);
+        // Inicializamos las variables.
+        editTitulo = findViewById(R.id.edtTitulo);
+        editFecha = findViewById(R.id.edtFecha);
+        editHora = findViewById(R.id.edtHora);
+        editLugar = findViewById(R.id.edtLugar);
+        editDescripcion = findViewById(R.id.edtDescripcion);
         checkboxPublico = findViewById(R.id.ckboxPublico);
         checkboxGastos = findViewById(R.id.ckbokGastos);
         btnGuardar = findViewById(R.id.btnGuardarEvento);
 
-        db = FirebaseFirestore.getInstance();
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance(); // Inicializamos Firestore.
+        usuarioActual = FirebaseAuth.getInstance().getCurrentUser(); // Obtenemos el usuario actual.
 
-        etFecha.setOnClickListener(v -> mostrarSelectorFecha());
+        editFecha.setOnClickListener(v -> mostrarSelectorFecha()); // Mostramos el selector de fecha al pulsar.
 
-        etHora.setOnClickListener(v -> mostrarSelectorHora());
+        editHora.setOnClickListener(v -> mostrarSelectorHora()); // Mostramos el selector de hora al pulsar.
 
-        btnGuardar.setOnClickListener(v -> guardarEvento());
+        btnGuardar.setOnClickListener(v -> guardarEvento()); // Guardamos el evento al pulsar.
     }
 
+    // Creamos un método para mostrar el selector de fecha.
     private void mostrarSelectorFecha() {
-        final Calendar calendario = Calendar.getInstance();
-        int anio = calendario.get(Calendar.YEAR);
-        int mes = calendario.get(Calendar.MONTH);
-        int dia = calendario.get(Calendar.DAY_OF_MONTH);
+        final Calendar calendario = Calendar.getInstance(); // Obtenemos la fecha actual.
+        int any = calendario.get(Calendar.YEAR); // Obtenemos el año actual.
+        int mes = calendario.get(Calendar.MONTH); // Obtenemos el mes actual.
+        int dia = calendario.get(Calendar.DAY_OF_MONTH); // Obtenemos el día actual.
 
+        // Creamos el selector de fecha.
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                // Creamos el listener para el selector de fecha.
                 (view, year, monthOfYear, dayOfMonth) -> {
                     String fechaSeleccionada = String.format(Locale.getDefault(), "%02d/%02d/%04d",
                             dayOfMonth, monthOfYear + 1, year);
-                    etFecha.setText(fechaSeleccionada);
-                }, anio, mes, dia);
+                    editFecha.setText(fechaSeleccionada);
+                }, any, mes, dia);
 
-        datePickerDialog.show();
+        datePickerDialog.show(); // Mostramos el selector de fecha.
     }
 
+    // Creamos un método para mostrar el selector de hora.
     private void mostrarSelectorHora() {
-        final Calendar calendar = Calendar.getInstance();
-        int hora = calendar.get(Calendar.HOUR_OF_DAY);
-        int minuto = calendar.get(Calendar.MINUTE);
+        final Calendar calendar = Calendar.getInstance(); // Obtenemos la hora actual.
+        int hora = calendar.get(Calendar.HOUR_OF_DAY); // Obtenemos la hora actual.
+        int minuto = calendar.get(Calendar.MINUTE); // Obtenemos el minuto actual.
 
+        // Creamos el selector de hora.
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                // Creamos el listener para el selector de hora.
                 (TimePicker view, int hourOfDay, int minute1) -> {
                     String horaFormateada = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute1);
-                    etHora.setText(horaFormateada);
+                    editHora.setText(horaFormateada);
                 }, hora, minuto, true);
 
-        timePickerDialog.show();
+        timePickerDialog.show(); // Mostramos el selector de hora.
     }
 
+    // Creamos un método para guardar el evento.
     private void guardarEvento() {
-        String titulo = etTitulo.getText().toString().trim();
-        String fecha = etFecha.getText().toString().trim();
-        String hora = etHora.getText().toString().trim();
-        String lugar = etLugar.getText().toString().trim();
-        String descripcion = etDescripcion.getText().toString().trim();
+        // Obtenemos los datos del evento.
+        String titulo = editTitulo.getText().toString().trim();
+        String fecha = editFecha.getText().toString().trim();
+        String hora = editHora.getText().toString().trim();
+        String lugar = editLugar.getText().toString().trim();
+        String descripcion = editDescripcion.getText().toString().trim();
         boolean publico = checkboxPublico.isChecked();
 
+        // Verificamos que los campos estén completos.
         if (titulo.isEmpty() || fecha.isEmpty() || hora.isEmpty() || lugar.isEmpty()) {
             Toast.makeText(this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Map<String, Object> datosEvento = new HashMap<>();
+        Map<String, Object> datosEvento = new HashMap<>(); // Creamos un mapa para almacenar los datos del evento.
+
+        // Añadimos los datos al mapa.
         datosEvento.put("titulo", titulo);
         datosEvento.put("fecha", fecha);
         datosEvento.put("hora", hora);
@@ -111,12 +123,14 @@ public class CrearEventoActivity extends AppCompatActivity {
         datosEvento.put("descripcion", descripcion);
         datosEvento.put("publico", publico);
         datosEvento.put("gastos", checkboxGastos.isChecked());
-        datosEvento.put("uid_usuario", currentUser.getUid());
+        datosEvento.put("uid_usuario", usuarioActual.getUid());
 
+        // Guardamos el evento en Firestore.
         db.collection("eventos")
-                .add(datosEvento)
+                .add(datosEvento) // Añadimos el evento a la colección "eventos".
+
                 .addOnSuccessListener(documentReference -> {
-                    programarNotificacion(documentReference.getId(), titulo, fecha, hora);
+                    programarNotificacion(documentReference.getId(), titulo, fecha, hora); // Programamos la notificación.
                     Toast.makeText(this, "Evento creado correctamente", Toast.LENGTH_SHORT).show();
                     finish();
                 })
@@ -125,28 +139,32 @@ public class CrearEventoActivity extends AppCompatActivity {
                 );
     }
 
+    // Creamos un método para programar la notificación.
     private void programarNotificacion(String eventoId, String tituloEvento, String fecha, String hora) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()); // Formato de fecha y hora.
+
         try {
-            Date fechaHora = sdf.parse(fecha + " " + hora);
-            if (fechaHora == null) return;
+            Date fechaHora = sdf.parse(fecha + " " + hora); // Parseamos la fecha y hora.
+            if (fechaHora == null) return; // Si no se pudo parsear, salimos.
 
-            long tiempoEnMillis = fechaHora.getTime();
-            if (tiempoEnMillis < System.currentTimeMillis()) return;
+            long tiempoEnMillis = fechaHora.getTime(); // Obtenemos el tiempo en milisegundos.
+            if (tiempoEnMillis < System.currentTimeMillis()) return; // Si la fecha y hora ya pasaron, salimos.
 
-            Intent intent = new Intent(this, NotificacionReceiver.class);
-            intent.putExtra("tituloEvento", tituloEvento);
-            intent.putExtra("eventoId", eventoId);
+            Intent intent = new Intent(this, NotificacionReceiver.class); // Creamos un intent para la notificación.
+            intent.putExtra("tituloEvento", tituloEvento); // Añadimos el título del evento al intent.
+            intent.putExtra("eventoId", eventoId); // Añadimos el ID del evento al intent.
 
+            // Creamos un PendingIntent para la notificación.
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     this,
+                    // Usamos el ID del evento como requestCode para el PendingIntent.
                     eventoId.hashCode(),
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
             );
 
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tiempoEnMillis, pendingIntent);
+            AlarmManager alarma = (AlarmManager) getSystemService(ALARM_SERVICE); // Obtenemos el AlarmManager.
+            alarma.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tiempoEnMillis, pendingIntent); // Programamos la alarma.
 
         } catch (ParseException e) {
             e.printStackTrace();

@@ -18,9 +18,10 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    // Declaración de variables.
     private EditText emailEditText, passwordEditText;
     private Button registerButton;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth autenticacion;
     private EditText aliasEditText;
 
     @Override
@@ -28,56 +29,65 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        mAuth = FirebaseAuth.getInstance();
+        autenticacion = FirebaseAuth.getInstance(); // Inicializamos FirebaseAuth
 
+        // Inicializamos las variables.
         emailEditText = findViewById(R.id.rgterEmailEditText);
         aliasEditText = findViewById(R.id.rgterAliasEditText);
         passwordEditText = findViewById(R.id.rgterPasswordEditText);
         registerButton = findViewById(R.id.rgterButton);
 
-        registerButton.setOnClickListener(v -> registerUser());
+        registerButton.setOnClickListener(v -> registrarUsuario()); // Registramos el usuario.
     }
 
-    private void registerUser() {
+    private void registrarUsuario() {
+        // Declaramos las variables de registro.
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String alias = aliasEditText.getText().toString().trim();
 
+        // Validamos los campos de registro.
         if (email.isEmpty()) {
             emailEditText.setError("El correo es obligatorio");
             emailEditText.requestFocus();
             return;
         }
 
+        // Validamos el formato del correo electrónico.
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailEditText.setError("Introduce un correo válido");
             emailEditText.requestFocus();
             return;
         }
 
+        // Validamos la contraseña.
         if (password.length() < 6) {
             passwordEditText.setError("Contraseña mínimo 6 caracteres");
             passwordEditText.requestFocus();
             return;
         }
 
+        // Validamos el alias.
         if (alias.isEmpty()) {
             aliasEditText.setError("El nombre de usuario es obligatorio");
             aliasEditText.requestFocus();
             return;
         }
 
-        mAuth.createUserWithEmailAndPassword(email, password)
+        // Registramos el usuario en Firebase Authentication.
+        autenticacion.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
+                    // Si el registro es exitoso, añadimos el usuario a Firestore.
                     if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        FirebaseUser user = autenticacion.getCurrentUser(); // Obtenemos el usuario actual
+                        FirebaseFirestore db = FirebaseFirestore.getInstance(); // Inicializamos Firestore
 
                         if (user != null) {
-                            Map<String, Object> datosUsuario = new HashMap<>();
-                            datosUsuario.put("email", user.getEmail());
-                            datosUsuario.put("alias", alias);
+                            Map<String, Object> datosUsuario = new HashMap<>(); // Creamos un mapa para almacenar los datos del usuario
+                            datosUsuario.put("email", user.getEmail()); // Guardamos el correo electrónico
+                            datosUsuario.put("alias", alias); // Guardamos el alias
 
+                            // Añadimos el usuario a Firestore.
                             db.collection("users")
                                     .document(user.getUid())
                                     .set(datosUsuario)

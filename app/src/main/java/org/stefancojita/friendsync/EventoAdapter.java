@@ -12,6 +12,7 @@ import java.util.List;
 
 public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder> {
 
+    // Declaración de variables.
     private List<Evento> listaEventos;
     private List<String> listaIds;
     private List<String> listaAutores;
@@ -22,6 +23,7 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
         this.listaAutores = listaAutores;
     }
 
+    // Sobreescribimos el método onCreateViewHolder para inflar el layout del item.
     @NonNull
     @Override
     public EventoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -30,27 +32,30 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
         return new EventoViewHolder(vista);
     }
 
+    // Sobreescribimos el método onBindViewHolder para asignar los datos a las vistas.
     @Override
     public void onBindViewHolder(@NonNull EventoViewHolder holder, int position) {
-        Evento evento = listaEventos.get(position);
-        holder.tvTitulo.setText(evento.getTitulo());
+        Evento evento = listaEventos.get(position); // Obtenemos el evento correspondiente a la posición.
+        holder.textTitulo.setText(evento.getTitulo()); // Asignamos el título del evento.
 
-        String fecha = evento.getFecha();
-        String hora = evento.getHora();
+        String fecha = evento.getFecha(); // Obtenemos la fecha del evento.
+        String hora = evento.getHora(); // Obtenemos la hora del evento.
 
+        // Formateamos la fecha y hora para mostrarla en el TextView con ternarios.
         String fechaHora = (hora != null && !hora.isEmpty())
                 ? "Fecha: " + fecha + " (" + hora + ")"
                 : "Fecha: " + fecha;
 
-        holder.tvFecha.setText(fechaHora);
+        holder.textFecha.setText(fechaHora); // Asignamos la fecha y hora al TextView.
 
-        holder.tvLugar.setText("Lugar: " + evento.getLugar());
+        holder.textLugar.setText("Lugar: " + evento.getLugar()); // Asignamos el lugar del evento.
 
-        String autor = listaAutores.get(position);
-        holder.tvAutor.setText("Creado por: " + autor);
+        String autor = listaAutores.get(position); // Obtenemos el autor del evento.
+        holder.textAutor.setText("Creado por: " + autor); // Asignamos el autor al TextView.
 
-        String eventoId = listaIds.get(position);
+        String eventoId = listaIds.get(position); // Obtenemos el ID del evento.
 
+        // Configuramos el evento de clic para abrir la actividad DetalleEventoActivity.
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), DetalleEventoActivity.class);
             intent.putExtra("eventoId", eventoId);
@@ -58,20 +63,22 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
         });
     }
 
+    // Sobreescribimos el método getItemCount para devolver la cantidad de eventos.
     @Override
     public int getItemCount() {
         return listaEventos.size();
     }
 
+    // Creamos una clase interna para el ViewHolder.
     public static class EventoViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitulo, tvFecha, tvLugar, tvAutor;
+        TextView textTitulo, textFecha, textLugar, textAutor;
 
         public EventoViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTitulo = itemView.findViewById(R.id.txtTitulo);
-            tvAutor = itemView.findViewById(R.id.txtAutor);
-            tvFecha = itemView.findViewById(R.id.txtFecha);
-            tvLugar = itemView.findViewById(R.id.txtLugar);
+            textTitulo = itemView.findViewById(R.id.txtTitulo);
+            textAutor = itemView.findViewById(R.id.txtAutor);
+            textFecha = itemView.findViewById(R.id.txtFecha);
+            textLugar = itemView.findViewById(R.id.txtLugar);
         }
     }
 }
