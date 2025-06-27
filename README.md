@@ -20,6 +20,8 @@ El objetivo principal es centralizar la organización de quedadas en una sola ap
 
 4. Seleccionar la ">" en la parte superior lateral derecha para ejecutar la aplicación. Es recomendable tener una versión de emulador más moderna. Si se quiere usar para móvil, basta con conectarlo por USB.
 
+---
+
 ## 🛠️ Especificaciones técnicas
 
 - **Lenguaje**: Java
