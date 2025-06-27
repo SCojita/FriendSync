@@ -1,4 +1,4 @@
-# 📱 FriendSync es una aplicación móvil para organizar eventos entre amigos de forma rápida y eficiente.
+📱 FriendSync es una aplicación móvil para organizar eventos entre amigos de forma rápida y eficiente.
 
 ---
 
