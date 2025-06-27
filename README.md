@@ -4,7 +4,8 @@
 
 ## 🧭 Introducción
 
-**FriendSync** nace como una solución a los problemas cotidianos que surgen al intentar coordinar planes con amigos: mensajes perdidos, falta de confirmaciones, horarios confusos... La aplicación permite crear eventos, invitar a contactos, gestionar asistentes, recibir notificaciones puntuales y mantener un historial de actividades pasadas.
+**FriendSync** nace como una solución a los problemas cotidianos que surgen al intentar coordinar planes con amigos: mensajes perdidos, falta de confirmaciones, horarios confusos... 
+La aplicación permite la gestión de eventos, calculadora de gastos básica, recibir notificaciones puntuales, mantener un historial de actividades pasadas, entre otras...
 
 El objetivo principal es centralizar la organización de quedadas en una sola app intuitiva y colaborativa, eliminando el caos de los grupos de chat y mejorando la experiencia social digital.
 
